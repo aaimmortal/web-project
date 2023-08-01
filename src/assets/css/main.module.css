@@ -1,0 +1,23 @@
+.page {
+    height: 100%;
+    min-height: 100vh;
+    background-color: aliceblue;
+    width: 100%;
+    display: flex;
+}
+.audio {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+.audio_logo {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+@media screen and (max-width: 520px) {
+    .page {
+        display: block;
+    }
+}

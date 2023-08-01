@@ -1,0 +1,77 @@
+.background {
+    background-color: black;
+    width: 200px;
+    height: 100%;
+    min-height: 100vh;
+    padding: 5px;
+}
+
+.login {
+    color: aliceblue;
+    font-size: 25px;
+}
+
+.active {
+    display: block !important;
+}
+
+.activeBack {
+    background-color: black;
+    height: 440px !important;
+    transition: height 0.5s;
+}
+
+.top_section {
+    display: none;
+}
+
+.logo {
+    color: aliceblue;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.menuItem {
+    color: aliceblue;
+    text-decoration: none;
+}
+
+.icon {
+    font-size: 21px;
+}
+
+.icon_text {
+    font-size: 15px;
+}
+
+@media screen and (max-width: 520px) {
+    .top_section {
+        display: block;
+    }
+
+    .background {
+        transition: height 0.5s;
+        min-height: 20px;
+    }
+
+    .menuItems {
+        display: none;
+    }
+
+    .icon_text {
+        font-size: 14px;
+    }
+
+    .icon {
+        display: none;
+    }
+
+    .background {
+        width: 100%;
+        height: 50px;
+    }
+
+    .logo {
+        font-size: 30px;
+    }
+}

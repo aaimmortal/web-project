@@ -1,0 +1,80 @@
+.back {
+    display: flex;
+    width: 100%;
+    height: 120vh;
+    background-color: aliceblue;
+}
+
+.test {
+    background-color: black;
+    height: 500px;
+    width: 300px;
+}
+
+form {
+    margin-top: 150px;
+    width: 400px;
+    height: 200px;
+}
+
+form p {
+    font-size: 20px;
+}
+
+.alert_error {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: #f8d7da;
+}
+
+.alert_success {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: #d4edda ;
+}
+
+form button {
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+@media screen and (max-width: 520px) {
+    .back {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    form p {
+        font-size: 18px;
+    }
+
+    form {
+        width: 270px;
+    }
+
+    form button {
+        padding: 2px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    form p {
+        font-size: 14px;
+    }
+
+    form {
+        width: 230px;
+    }
+
+    button {
+        font-size: 15px;
+    }
+
+    form button {
+        padding: 1px;
+    }
+}

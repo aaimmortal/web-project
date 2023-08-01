@@ -1,0 +1,56 @@
+.page {
+    height: 100vh;
+    background-color: aliceblue;
+    display: flex;
+    justify-content: center;
+}
+
+.banner {
+    text-align: center;
+    font-size: 28px;
+    background-color: white;
+    padding: 26px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+form {
+    margin-top: 150px;
+    width: 400px;
+}
+
+form button {
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.alert_error {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: #f8d7da;
+}
+
+@media screen and (max-width: 1200px) {
+    .banner {
+        padding: 10px;
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .banner {
+        padding: 7px;
+        font-size: 15px;
+    }
+
+    form {
+        width: 270px;
+    }
+
+    form button {
+        padding: 2px;
+    }
+}

@@ -1,8 +1,8 @@
 import React from "react";
 import {TbMapPins, TbReportSearch} from "react-icons/tb";
-import {FaCar, FaRoute, FaUsers} from "react-icons/fa";
+import {FaUsers} from "react-icons/fa";
 import {BiLogOut, BiMap} from "react-icons/bi";
-import {AiOutlineUserAdd, AiOutlineMenu} from "react-icons/ai";
+import {AiOutlineBarChart, AiOutlineUserAdd, AiOutlineMenu} from "react-icons/ai";
 import {NavLink} from "react-router-dom";
 import styles from "../assets/css/sidebar.module.css"
 
@@ -18,19 +18,19 @@ class Sidebar extends React.Component {
                     icon: <TbReportSearch/>
                 },
                 {
-                    path: "#",
+                    path: "/audio",
                     name: "Запись звонков",
                     icon: <TbMapPins/>
+                },
+                {
+                    path: "/statistics",
+                    name: "Статистика",
+                    icon: <AiOutlineBarChart/>
                 },
                 {
                     path: "#",
                     name: "Список пользователей",
                     icon: <FaUsers/>
-                },
-                {
-                    path: "#",
-                    name: "История",
-                    icon: <FaRoute/>
                 },
                 {
                     path: "#",

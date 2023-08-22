@@ -2,9 +2,18 @@ import React from "react";
 import styles from "../assets/css/main.module.css"
 import Sidebar from "../components/sidebar.js";
 import {isExpired} from "react-jwt";
-import logo from '../assets/images/audio_logo.svg'
+import axios from "axios";
 
 class Main extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            startDate: "",
+            endDate: "",
+            res: []
+        }
+    }
+
     componentDidMount() {
         // const token = localStorage.getItem("jwt")
         // console.log(token)
@@ -13,37 +22,81 @@ class Main extends React.Component {
         // }
     }
 
+    handleStartDateChange = (e) => {
+        this.setState({
+            startDate: e.target.value
+        })
+    }
+    handleEndDateChange = (e) => {
+        this.setState({
+            endDate: e.target.value
+        })
+    }
+    handleSubmit = () => {
+        const start = `${this.state.startDate} 00:00:00`
+        const end = `${this.state.endDate} 23:59:59`
+        console.log(start)
+        console.log(end)
+        axios.get("http://172.16.3.185:8080/api/calldateBetween", {
+            params: {
+                dateTime: start,
+                dateTime2: end
+            }
+        }).then(res => {
+            console.log(res)
+            this.setState({
+                res: res.data
+            })
+        }).catch(err => {
+            console.log(err.response.data)
+        })
+    }
+    handleUpdate = () => {
+        this.handleSubmit()
+    }
+
     render() {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"container w-100 h-100"}>
-                    <div>
-                        <h2>Выберите дату</h2>
+                <div className={`${styles.page} p-3 w-100 h-100`}>
+                    <div className={"w-25"}>
                         <div>
-                            <input name={"date"} type={"date"}/>
-                            <button type={"button"} className={"ms-2"} data-toggle="modal" data-target="#exampleModal">Показать</button>
+                            <h4>Выберите дату начала</h4>
+                            <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
                         </div>
+                        <div>
+                            <h4>Выберите дату конца</h4>
+                            <input name={"date"} type={"date"} onChange={this.handleEndDateChange}/>
+                        </div>
+                        <button type={"button"} className={""} onClick={this.handleSubmit}>Показать</button>
                     </div>
-
-                </div>
-                <div className="modal fade" tabIndex="-1" role="dialog" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Modal body text goes here.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-primary">Save changes</button>
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
+                    <div className={`w-100 table-responsive`}>
+                        <table className={"table"}>
+                            <thead>
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Источник</th>
+                                <th scope="col">Адресат</th>
+                                <th scope="col">Ответ</th>
+                                <th scope="col">Продолжительность</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.res.map(cur => (
+                                    <tr>
+                                        <td>{cur.calldate}</td>
+                                        <td>{cur.src}</td>
+                                        <td>{cur.dst}</td>
+                                        <td>{cur.disposition}</td>
+                                        <td>{cur.duration}</td>
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </table>
+                        {this.state.res.length !== 0 && <button onClick={this.handleUpdate}>Обновить</button>}
                     </div>
                 </div>
             </div>

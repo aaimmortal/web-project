@@ -2,7 +2,9 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Login from "./pages/login.js";
 import Main from "./pages/main.js";
 import Register from "./pages/register";
-import {useEffect} from "react";
+import Statistics from "./pages/statistics";
+import Audio from "./pages/audio";
+import Test from "./pages/test";
 
 
 function App() {
@@ -10,9 +12,12 @@ function App() {
         <div style={{height: "100%"}}>
             <BrowserRouter>
                 <Routes>
+                    <Route path={"/"} element={<Test/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path={"/main"} element={<Main/>}/>
                     <Route path={"/register"} element={<Register/>}/>
+                    <Route path={"/statistics"} element={<Statistics/>}/>
+                    <Route path={"/audio"} element={<Audio/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

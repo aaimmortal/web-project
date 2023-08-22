@@ -16,6 +16,9 @@
     margin-top: 10px;
     cursor: pointer;
 }
+.table-wrapper-scroll-y {
+    max-height: 100%;
+}
 @media screen and (max-width: 520px) {
     .page {
         display: block;

@@ -24,7 +24,7 @@ class Login extends React.Component {
     }
     login = (e) => {
         e.preventDefault()
-        axios.post('http://10.12.145.19:8080/api/login', {
+        axios.post('http://localhost:8080/api/login', {
             login: this.state.login,
             password: this.state.password
         }).then(response => {

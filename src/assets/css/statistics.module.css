@@ -1,0 +1,51 @@
+.page {
+    height: 100%;
+    min-height: 100vh;
+    background-color: aliceblue;
+    width: 100%;
+    display: flex;
+}
+
+.left_right {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.left {
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    width: 45%;
+}
+
+.left_item {
+    border-top: 1px solid black;
+}
+
+.right {
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    width: 45%;
+}
+
+@media screen and (max-width: 520px) {
+    .page {
+        display: block;
+    }
+
+    .left_right {
+        display: block;
+    }
+
+    .right {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .left {
+        width: 100%;
+    }
+}

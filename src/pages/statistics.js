@@ -12,15 +12,12 @@ class Statistics extends React.Component {
             dispositionCountByAccount: {},
             dispositionCount: [],
             allCalldata: [],
-            busy: 0,
-            answered: 0,
-            noAnswer: 0,
             data: {
-                labels: ['Принятые', 'Не принятые', 'Не дождались ответа'],
+                labels: ['Принятые', 'Не дождались ответа'],
                 datasets: [
                     {
-                        data: [0, 0, 0],
-                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                        data: [0, 0],
+                        backgroundColor: ['#FF6384', '#36A2EB']
                     }
                 ]
             }
@@ -33,7 +30,7 @@ class Statistics extends React.Component {
             res.data.forEach(cur => {
                 r[cur.src] = {
                     ...r[cur.src],
-                    [cur.disposition.split(' ').join('')]: cur.count
+                    [cur.disposition]: cur.count
                 }
             })
             console.log(r)
@@ -45,16 +42,15 @@ class Statistics extends React.Component {
             this.setState({
                 dispositionCount: res.data
             })
-            const foundBusy = res.data.find(val => val.disposition === "BUSY")
+            const foundCancel = res.data.find(val => val.disposition === "CANCEL")
             const foundAnswered = res.data.find(val => val.disposition === "ANSWERED")
-            const foundNoAnswer = res.data.find(val => val.disposition === "NO ANSWER")
             this.setState({
                 data: {
                     ...this.state.data,
                     datasets: [
                         {
-                            data: [foundAnswered != null ? foundAnswered.count : 0, foundBusy != null ? foundBusy.count : 0, foundNoAnswer != null ? foundNoAnswer.count : 0],
-                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                            data: [foundAnswered != null ? foundAnswered.count : 0, foundCancel != null ? foundCancel.count : 0],
+                            backgroundColor: ['#FF6384', '#36A2EB']
                         }
                     ]
                 }
@@ -89,10 +85,9 @@ class Statistics extends React.Component {
                         <div className={styles.left}>
                             <h3>Сводная статистика</h3>
                             <p className={styles.left_item}>Всего звонков {this.state.allCalldata.length}</p>
-                            <p className={styles.left_item}>Непринятые {this.state.dispositionCount.length !== 0 && this.state.dispositionCount.find(val => val.disposition === "BUSY").count}</p>
                             <p className={styles.left_item}>Принятые {this.state.dispositionCount.length !== 0 && this.state.dispositionCount.find(val => val.disposition === "ANSWERED").count}</p>
                             <p className={styles.left_item}>Не дождались
-                                ответа {this.state.dispositionCount.find(val => val.disposition === "NO ANSWER") == null ? 0 : this.state.dispositionCount.find(val => val.disposition === "NO ANSWER").count}</p>
+                                ответа {this.state.dispositionCount.find(val => val.disposition === "CANCEL") == null ? 0 : this.state.dispositionCount.find(val => val.disposition === "CANCEL").count}</p>
                         </div>
                         <div className={styles.right}>
                             <Pie data={this.state.data} options={this.options}/>
@@ -104,7 +99,6 @@ class Statistics extends React.Component {
                             <tr>
                                 <th>Агент</th>
                                 <th>Принятые</th>
-                                <th>Не принятые</th>
                                 <th>Не дождались ответа</th>
                             </tr>
                             </thead>
@@ -113,9 +107,8 @@ class Statistics extends React.Component {
                                 Object.entries(this.state.dispositionCountByAccount).map(([key, value]) => (
                                     <tr>
                                         <td>{key}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWERED') ? value.ANSWERED : 0}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('BUSY') ? value.BUSY : 0}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('NOANSWER') ? value.NOANSWER : 0}</td>
+                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWER') ? value.ANSWER : 0}</td>
+                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('CANCEL') ? value.CANCEL : 0}</td>
                                     </tr>
                                 ))
                             }

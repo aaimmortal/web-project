@@ -32,7 +32,7 @@ class Register extends React.Component {
     }
     register = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:8080/api/user', {
+        axios.post('http://172.16.3.185:8080/api/user', {
             login: this.state.login,
             password: this.state.password,
             repeatPassword: this.state.repeatPassword

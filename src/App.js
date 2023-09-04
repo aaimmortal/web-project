@@ -4,15 +4,12 @@ import Main from "./pages/main.js";
 import Register from "./pages/register";
 import Statistics from "./pages/statistics";
 import Audio from "./pages/audio";
-import Test from "./pages/test";
-
 
 function App() {
     return (
         <div style={{height: "100%"}}>
             <BrowserRouter>
                 <Routes>
-                    <Route path={"/"} element={<Test/>}/>
                     <Route path="/login" element={<Login/>}/>
                     <Route path={"/main"} element={<Main/>}/>
                     <Route path={"/register"} element={<Register/>}/>

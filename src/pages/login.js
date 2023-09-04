@@ -24,7 +24,7 @@ class Login extends React.Component {
     }
     login = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:8080/api/login', {
+        axios.post('http://172.16.3.185:8080/api/login', {
             login: this.state.login,
             password: this.state.password
         }).then(response => {
@@ -35,7 +35,7 @@ class Login extends React.Component {
                 console.log(JSON.parse(decodedPayload));
                 localStorage.setItem("jwt", token)
                 localStorage.setItem("user", decodedPayload)
-                window.location.href = `http://10.12.145.19:3000/main`
+                window.location.href = `http://172.16.3.185:3000/main`
             } else {
                 this.setState({
                     errorText: "Invalid login or password!"

@@ -18,11 +18,6 @@ class Sidebar extends React.Component {
                     icon: <TbReportSearch/>
                 },
                 {
-                    path: "/audio",
-                    name: "Запись звонков",
-                    icon: <TbMapPins/>
-                },
-                {
                     path: "/statistics",
                     name: "Статистика",
                     icon: <AiOutlineBarChart/>
@@ -31,11 +26,6 @@ class Sidebar extends React.Component {
                     path: "#",
                     name: "Список пользователей",
                     icon: <FaUsers/>
-                },
-                {
-                    path: "#",
-                    name: "Главное меню",
-                    icon: <BiMap/>
                 },
                 {
                     path: "/register",

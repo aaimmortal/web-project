@@ -56,17 +56,14 @@ class Audio extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={`${styles.page} p-3 w-100 h-100`}>
-                    <div className={"w-25"}>
+                <div className={styles.main}>
+
+                    <div className={"w-100 d-flex align-items-center"}>
                         <div>
-                            <h4>Выберите дату начала</h4>
                             <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                            <input name={"date"} type={"date"} className={"ms-1"} onChange={this.handleEndDateChange}/>
+                            <input type={"button"} className={"ms-2"} onClick={this.handleSubmit} value={"Показать"}/>
                         </div>
-                        <div>
-                            <h4>Выберите дату конца</h4>
-                            <input name={"date"} type={"date"} onChange={this.handleEndDateChange}/>
-                        </div>
-                        <button type={"button"} onClick={this.handleSubmit}>Показать</button>
                     </div>
                     <div className={`w-100`}>
                         {
@@ -82,7 +79,7 @@ class Audio extends React.Component {
                                 </div>
                             ))
                         }
-                        {this.state.audios.length !== 0 && <button onClick={this.handleUpdate}>Обновить</button>}
+                        {this.state.audios.length !== 0 && <button onClick={this.handleUpdate} className={"mt-2"}>Обновить</button>}
                     </div>
                 </div>
             </div>

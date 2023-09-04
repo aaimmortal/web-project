@@ -5,20 +5,30 @@
     width: 100%;
     display: flex;
 }
+
+.main {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
 .audio {
     position: absolute;
     bottom: 0;
     width: 100%;
 }
+
 .audio_logo {
     width: 100px;
     height: 100px;
     margin-top: 10px;
     cursor: pointer;
 }
+
 .table-wrapper-scroll-y {
     max-height: 100%;
 }
+
 @media screen and (max-width: 520px) {
     .page {
         display: block;

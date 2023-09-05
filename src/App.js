@@ -3,7 +3,7 @@ import Login from "./pages/login.js";
 import Main from "./pages/main.js";
 import Register from "./pages/register";
 import Statistics from "./pages/statistics";
-import Audio from "./pages/audio";
+
 
 function App() {
     return (
@@ -14,7 +14,6 @@ function App() {
                     <Route path={"/main"} element={<Main/>}/>
                     <Route path={"/register"} element={<Register/>}/>
                     <Route path={"/statistics"} element={<Statistics/>}/>
-                    <Route path={"/audio"} element={<Audio/>}/>
                 </Routes>
             </BrowserRouter>
         </div>

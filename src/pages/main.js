@@ -3,10 +3,12 @@ import styles from "../assets/css/main.module.css"
 import Sidebar from "../components/sidebar.js";
 import axios from "axios";
 import {Button, Modal} from "react-bootstrap";
+import {DownloadTableExcel} from "react-export-table-to-excel";
 
 class Main extends React.Component {
     constructor(props) {
         super(props);
+        this.tableRef = React.createRef()
         this.state = {
             startDate: "",
             endDate: "",
@@ -111,7 +113,7 @@ class Main extends React.Component {
                             </div>
                         </div>
                         <div className={`w-100 mt-3 table-responsive`}>
-                            <table className={"table"}>
+                            <table className={"table"} ref={this.tableRef}>
                                 <thead>
                                 <tr>
                                     <th scope="col">Дата</th>
@@ -162,6 +164,13 @@ class Main extends React.Component {
                                 </tbody>
                             </table>
                             {this.state.res.length !== 0 && <button onClick={this.handleUpdate}>Обновить</button>}
+                            <DownloadTableExcel
+                                filename="users table"
+                                sheet="users"
+                                currentTableRef={this.tableRef.current}
+                            >
+                                <button className={"ms-1"}> Export excel</button>
+                            </DownloadTableExcel>
                         </div>
                     </div>
                 </div>
@@ -199,7 +208,6 @@ class Main extends React.Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-
             </div>
         )
     }

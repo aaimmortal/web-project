@@ -36,7 +36,18 @@ class Statistics extends React.Component {
     }
 
     renderComponents = () => {
-        axios.get("http://172.16.3.185:8080/api/dispositionCountByAccount").then(res => {
+        this.callDate()
+    }
+    callDate = () => {
+        const start = this.state.dateTime === "" ? "" : `${this.state.dateTime} 00:00:00`
+        const end = this.state.dateTime2 === "" ? "" : `${this.state.dateTime2} 23:59:59`
+        axios.get("http://172.16.3.185:8080/api/dispositionCountByAccount",
+            {
+                params: {
+                    dateTime: start,
+                    dateTime2: end
+                }
+            }).then(res => {
             const r = {}
             res.data.forEach(cur => {
                 r[cur.src] = {
@@ -48,11 +59,6 @@ class Statistics extends React.Component {
                 dispositionCountByAccount: r
             })
         })
-        this.callDate()
-    }
-    callDate = () => {
-        const start = this.state.dateTime === "" ? "" : `${this.state.dateTime} 00:00:00`
-        const end = this.state.dateTime2 === "" ? "" : `${this.state.dateTime2} 23:59:59`
         axios.get("http://172.16.3.185:8080/api/dispositionCount", {
             params: {
                 dateTime: start,
@@ -106,7 +112,6 @@ class Statistics extends React.Component {
     componentDidMount() {
         this.renderComponents()
     }
-
 
     options = {
         maintainAspectRatio: false, // Disable the default aspect ratio

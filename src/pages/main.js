@@ -95,13 +95,19 @@ class Main extends React.Component {
             show: true
         })
     }
+    handleDownload = () => {
+        const link = document.createElement('a');
+        link.href = this.state.audioUrl;
+        link.download = 'downloaded-audio.wav'; // Specify the desired filename with the .wav extension
+        link.click();
+    }
 
     render() {
         return (
             <div className={styles.page}>
                 <Sidebar/>
                 <div className={styles.main}>
-                    <audio controls className={styles.audio} src={this.state.audioUrl}/>
+                    <audio controls className={styles.audio} src={this.state.audioUrl} type="audio/wav"/>
                     <div className={"p-3"}>
                         <div className={"w-100 d-flex align-items-center"}>
                             <div>
@@ -164,6 +170,7 @@ class Main extends React.Component {
                                 </tbody>
                             </table>
                             {this.state.res.length !== 0 && <button onClick={this.handleUpdate}>Обновить</button>}
+                            {this.state.audioUrl != null && <button className={"ms-1"} onClick={this.handleDownload}>Скачать аудио</button>}
                             <DownloadTableExcel
                                 filename="users table"
                                 sheet="users"

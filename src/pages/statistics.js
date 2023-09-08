@@ -70,16 +70,19 @@ class Statistics extends React.Component {
             })
             const foundCancel = res.data.find(val => val.disposition === "CANCEL")
             const foundAnswered = res.data.find(val => val.disposition === "ANSWERED")
+            const answerCount = foundAnswered != null ? foundAnswered.count : 0
+            const cancelCount = foundCancel != null ? foundCancel.count : 0
             this.setState({
                 data: {
                     ...this.state.data,
                     datasets: [
                         {
-                            data: [foundAnswered != null ? foundAnswered.count : 0, foundCancel != null ? foundCancel.count : 0],
-                            backgroundColor: ['#FF6384', '#36A2EB']
+                            data: [answerCount, cancelCount],
                         }
                     ]
-                }
+                },
+                answered: answerCount,
+                canceled: cancelCount
             })
         })
         axios.get("http://172.16.3.185:8080/api/calldateBetween", {
@@ -88,7 +91,6 @@ class Statistics extends React.Component {
                 dateTime2: end
             }
         }).then(res => {
-            console.log(res.data)
             const len = res.data.length
             const avgRating = res.data.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / len
             const avgWaiting = res.data.reduce((accumulator, currentValue) => accumulator + currentValue.waiting, 0) / len
@@ -156,7 +158,8 @@ class Statistics extends React.Component {
                             <p className={styles.left_item}>Не дождались ответа {this.state.canceled}</p>
                             <p className={styles.left_item}>Средняя оценка: {this.state.avgRating}</p>
                             <p className={styles.left_item}>Среднее время ожидания: {this.state.avgWaiting} сек.</p>
-                            <p className={styles.left_item}>Среднее время консультаций: {this.state.avgDurationConsult} сек.</p>
+                            <p className={styles.left_item}>Среднее время
+                                консультаций: {this.state.avgDurationConsult} сек.</p>
                             <p className={styles.left_item}>Казахский: {this.state.kz}</p>
                             <p className={styles.left_item}>Русский: {this.state.ru}</p>
                         </div>

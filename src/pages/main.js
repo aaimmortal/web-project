@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../assets/css/main.module.css"
 import Sidebar from "../components/sidebar.js";
 import axios from "axios";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Modal, Table} from "react-bootstrap";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 
 class Main extends React.Component {
@@ -12,12 +12,21 @@ class Main extends React.Component {
         this.state = {
             startDate: "",
             endDate: "",
+            startTime: "00:00",
+            endTime: "23:59",
             res: [],
             show: false,
             audioUrl: null,
-            agentCallData: []
+            agentCallData: [],
+            search: "Найти по фио",
+            searchValue: "",
+            agents: {
+                7001: "Каламкас",
+                7002: "Аружан"
+            }
         }
     }
+
 
     componentDidMount() {
         // const token = localStorage.getItem("jwt")
@@ -37,16 +46,55 @@ class Main extends React.Component {
             endDate: e.target.value
         })
     }
+    handleStartTimeChange = (e) => {
+        this.setState({
+            startTime: e.target.value
+        })
+    }
+    handleEndTimeChange = (e) => {
+        this.setState({
+            endTime: e.target.value
+        })
+    }
+    handleSearchChange = (e) => {
+        this.setState({
+            search: e.target.value
+        })
+    }
+    handleSearchByNumber = () => {
+        if (this.state.search === "Найти по номеру") {
+            const filteredData = this.state.res.filter(item => item.src.includes(this.state.searchValue))
+            this.setState({
+                res: filteredData
+            })
+        } else {
+            let target = ""
+            for (const key in this.state.agents) {
+                if (this.state.agents[key] === this.state.searchValue) {
+                    target = key
+                    break
+                }
+            }
+            const filteredData = this.state.res.filter(item => item.dst === target)
+            this.setState({
+                res: filteredData
+            })
+        }
+    }
+    handleInputChange = (e) => {
+        this.setState({
+            searchValue: e.target.value
+        })
+    }
     handleSubmit = () => {
-        const start = `${this.state.startDate} 00:00:00`
-        const end = `${this.state.endDate} 23:59:59`
+        const start = `${this.state.startDate} ${this.state.startTime}:00`
+        const end = `${this.state.endDate} ${this.state.endTime}:59`
         axios.get("http://172.16.3.185:8080/api/calldateBetween", {
             params: {
                 dateTime: start,
                 dateTime2: end
             }
         }).then(res => {
-            console.log(res.data)
             this.setState({
                 res: res.data
             })
@@ -54,9 +102,7 @@ class Main extends React.Component {
             console.log(err.response.data)
         })
     }
-    handleUpdate = () => {
-        this.handleSubmit()
-    }
+
     fetchAudio = async (cid) => {
         try {
             const response = await axios.get("http://172.16.3.185:8080/api/audio", {
@@ -70,8 +116,9 @@ class Main extends React.Component {
             this.setState({
                 audioUrl: url
             });
+            return url
         } catch (error) {
-            console.log(error)
+            return null
         }
     };
     fetchAgentCallData = (cid) => {
@@ -95,10 +142,10 @@ class Main extends React.Component {
             show: true
         })
     }
-    handleDownload = () => {
+    handleDownload = async (id) => {
         const link = document.createElement('a');
-        link.href = this.state.audioUrl;
-        link.download = 'downloaded-audio.wav'; // Specify the desired filename with the .wav extension
+        link.href = await this.fetchAudio(id);
+        link.download = 'downloaded-audio.wav';
         link.click();
     }
 
@@ -106,35 +153,58 @@ class Main extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={styles.main}>
-                    <audio controls className={styles.audio} src={this.state.audioUrl} type="audio/wav"/>
+                <div>
                     <div className={"p-3"}>
-                        <div className={"w-100 d-flex align-items-center"}>
-                            <div>
-                                <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                                <input name={"date"} type={"date"} className={"ms-1"}
-                                       onChange={this.handleEndDateChange}/>
-                                <input type={"button"} className={"ms-2"} onClick={this.handleSubmit}
-                                       value={"Показать"}/>
+                        <div className={"d-flex align-items-center"}>
+                            <div className={"w-100 d-flex justify-content-between"}>
+                                <div>
+                                    <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                                    <input name={"date"} type={"date"} className={styles.inputDateTime}
+                                           onChange={this.handleEndDateChange}/>
+                                    <input name={"date"} type={"time"} className={styles.inputDateTime}
+                                           onChange={this.handleStartTimeChange}/>
+                                    <input name={"date"} type={"time"} className={styles.inputDateTime}
+                                           onChange={this.handleEndTimeChange}/>
+                                    <input type={"button"} className={styles.inputDateTime} onClick={this.handleSubmit}
+                                           value={"Показать"}/>
+                                    <DownloadTableExcel filename="users table" sheet="users"
+                                                        currentTableRef={this.tableRef.current}>
+                                        <button className={styles.inputDateTime}> Экспорт эксель</button>
+                                    </DownloadTableExcel>
+                                </div>
+                                <div className={"d-flex align-items-center"}>
+                                    <select onChange={this.handleSearchChange}>
+                                        <option>Найти по фио</option>
+                                        <option>Найти по номеру</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <input type={"search"} placeholder={this.state.search}
+                                           onChange={this.handleInputChange}/>
+                                    <button onClick={this.handleSearchByNumber}>Найти</button>
+                                </div>
                             </div>
                         </div>
-                        <div className={`w-100 mt-3 table-responsive`}>
-                            <table className={"table"} ref={this.tableRef}>
+                        <div className={`mt-3`} style={{maxWidth: "1300px"}}>
+                            <Table responsive={true} striped bordered hover ref={this.tableRef}>
                                 <thead>
                                 <tr>
                                     <th scope="col">Дата</th>
                                     <th scope="col">Источник</th>
                                     <th scope="col">Адресат</th>
-                                    <th scope="col">Ответ</th>
+                                    <th scope="col">Статус</th>
                                     <th scope="col">Язык</th>
                                     <th scope="col">Продолжительность</th>
                                     <th scope="col">Оценка</th>
                                     <th scope="col">Подключился</th>
                                     <th scope="col">Отключился</th>
                                     <th scope="col">Ожидание</th>
-                                    <th scope="col">Время разговора</th>
-                                    <th scope="col">Подробнее</th>
+                                    <th scope="col">Разговор</th>
+                                    <th scope="col">Перенап</th>
+                                    <th scope="col">Сбросил</th>
                                     <th scope="col">Запись</th>
+                                    <th scope="col">Скачать</th>
+                                    <th scope="col">Аудио</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -143,7 +213,7 @@ class Main extends React.Component {
                                         <tr>
                                             <td>{cur.calldate.replace('T', " ")}</td>
                                             <td>{cur.src}</td>
-                                            <td>{cur.dst}</td>
+                                            <td>{this.state.agents[cur.dst]}</td>
                                             <td>{cur.disposition}</td>
                                             <td>{cur.language}</td>
                                             <td>{cur.duration}</td>
@@ -157,27 +227,30 @@ class Main extends React.Component {
                                                     историю
                                                 </button>
                                             </td>
+                                            <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
                                             <td>
                                                 {
-                                                    cur.disposition === "CANCEL" ? "Не состоялся" :
+                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
                                                         <button onClick={() => this.fetchAudio(cur.uniqueid)}>Прослушать
                                                         </button>
                                                 }
+                                            </td>
+                                            <td>
+                                                {
+                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                        <button
+                                                            onClick={() => this.handleDownload(cur.uniqueid)}>Скачать
+                                                        </button>
+                                                }
+                                            </td>
+                                            <td>
+                                                <audio controls src={this.state.audioUrl} type="audio/wav"/>
                                             </td>
                                         </tr>
                                     ))
                                 }
                                 </tbody>
-                            </table>
-                            {this.state.res.length !== 0 && <button onClick={this.handleUpdate}>Обновить</button>}
-                            {this.state.audioUrl != null && <button className={"ms-1"} onClick={this.handleDownload}>Скачать аудио</button>}
-                            <DownloadTableExcel
-                                filename="users table"
-                                sheet="users"
-                                currentTableRef={this.tableRef.current}
-                            >
-                                <button className={"ms-1"}> Export excel</button>
-                            </DownloadTableExcel>
+                            </Table>
                         </div>
                     </div>
                 </div>
@@ -189,7 +262,7 @@ class Main extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div className={"w-100 table-responsive"}>
-                            <table className={"w-100 table"}>
+                            <Table className={"w-100 table"}>
                                 <thead>
                                 <tr>
                                     <th scope="col">Агент</th>
@@ -206,7 +279,7 @@ class Main extends React.Component {
                                     ))
                                 }
                                 </tbody>
-                            </table>
+                            </Table>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

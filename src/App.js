@@ -7,7 +7,7 @@ import Statistics from "./pages/statistics";
 
 function App() {
     return (
-        <div style={{height: "100%"}}>
+        <div>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Login/>}/>

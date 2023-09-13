@@ -112,11 +112,7 @@ class Main extends React.Component {
                 }
             });
             const blob = response.data;
-            const url = URL.createObjectURL(blob);
-            this.setState({
-                audioUrl: url
-            });
-            return url
+            return URL.createObjectURL(blob)
         } catch (error) {
             return null
         }
@@ -148,13 +144,18 @@ class Main extends React.Component {
         link.download = 'downloaded-audio.wav';
         link.click();
     }
+    setAudioSrc = async (id) => {
+        const audioElement = document.getElementById(id)
+        const url = this.fetchAudio(id)
+        audioElement.setAttribute("src", await url);
+    }
 
     render() {
         return (
             <div className={styles.page}>
                 <Sidebar/>
                 <div>
-                    <div className={"p-3"}>
+                    <div className={"w-100 p-3"}>
                         <div className={"d-flex align-items-center"}>
                             <div className={"w-100 d-flex justify-content-between"}>
                                 <div>
@@ -175,7 +176,7 @@ class Main extends React.Component {
                                 <div className={"d-flex align-items-center"}>
                                     <select onChange={this.handleSearchChange}>
                                         <option>Найти по фио</option>
-                                        <option>Найти по номеру</option>
+                                        <option>Найти по номеру источника</option>
                                     </select>
                                 </div>
                                 <div>
@@ -185,24 +186,23 @@ class Main extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className={`mt-3`} style={{maxWidth: "1300px"}}>
-                            <Table responsive={true} striped bordered hover ref={this.tableRef}>
+                        <div className={`mt-3`} style={{width: "1300px"}}>
+                            <Table responsive={true} striped bordered hover>
                                 <thead>
                                 <tr>
                                     <th scope="col">Дата</th>
                                     <th scope="col">Источник</th>
-                                    <th scope="col">Адресат</th>
-                                    <th scope="col">Статус</th>
                                     <th scope="col">Язык</th>
+                                    <th scope="col">ФИО</th>
+                                    <th scope="col">Статус</th>
                                     <th scope="col">Продолжительность</th>
-                                    <th scope="col">Оценка</th>
+                                    <th scope="col">Ожидание</th>
+                                    <th scope="col">Перенап</th>
                                     <th scope="col">Подключился</th>
                                     <th scope="col">Отключился</th>
-                                    <th scope="col">Ожидание</th>
                                     <th scope="col">Разговор</th>
-                                    <th scope="col">Перенап</th>
+                                    <th scope="col">Оценка</th>
                                     <th scope="col">Сбросил</th>
-                                    <th scope="col">Запись</th>
                                     <th scope="col">Скачать</th>
                                     <th scope="col">Аудио</th>
                                 </tr>
@@ -213,28 +213,21 @@ class Main extends React.Component {
                                         <tr>
                                             <td>{cur.calldate.replace('T', " ")}</td>
                                             <td>{cur.src}</td>
+                                            <td>{cur.language}</td>
                                             <td>{this.state.agents[cur.dst]}</td>
                                             <td>{cur.disposition}</td>
-                                            <td>{cur.language}</td>
                                             <td>{cur.duration}</td>
-                                            <td>{cur.rating}</td>
-                                            <td>{cur.connect}</td>
-                                            <td>{cur.disconnect}</td>
                                             <td>{cur.waiting}</td>
-                                            <td>{cur.durationConsult}</td>
                                             <td>
                                                 <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
                                                     историю
                                                 </button>
                                             </td>
+                                            <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
+                                            <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
+                                            <td>{cur.durationConsult}</td>
+                                            <td>{cur.rating}</td>
                                             <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
-                                            <td>
-                                                {
-                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
-                                                        <button onClick={() => this.fetchAudio(cur.uniqueid)}>Прослушать
-                                                        </button>
-                                                }
-                                            </td>
                                             <td>
                                                 {
                                                     (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
@@ -244,7 +237,15 @@ class Main extends React.Component {
                                                 }
                                             </td>
                                             <td>
-                                                <audio controls src={this.state.audioUrl} type="audio/wav"/>
+                                                {
+                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                        <div className={"d-flex"}>
+                                                            <button
+                                                                onClick={() => this.setAudioSrc(cur.uniqueid)}>Прослушать
+                                                            </button>
+                                                            <audio id={cur.uniqueid} controls type="audio/wav"/>
+                                                        </div>
+                                                }
                                             </td>
                                         </tr>
                                     ))
@@ -288,6 +289,44 @@ class Main extends React.Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <Table className={styles.hiddenTable} ref={this.tableRef}>
+                    <thead>
+                    <tr>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Источник</th>
+                        <th scope="col">Язык</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Продолжительность</th>
+                        <th scope="col">Ожидание</th>
+                        <th scope="col">Подключился</th>
+                        <th scope="col">Отключился</th>
+                        <th scope="col">Разговор</th>
+                        <th scope="col">Оценка</th>
+                        <th scope="col">Сбросил</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        this.state.res.map(cur => (
+                            <tr>
+                                <td>{cur.calldate.replace('T', " ")}</td>
+                                <td>{cur.src}</td>
+                                <td>{cur.language}</td>
+                                <td>{this.state.agents[cur.dst]}</td>
+                                <td>{cur.disposition}</td>
+                                <td>{cur.duration}</td>
+                                <td>{cur.waiting}</td>
+                                <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
+                                <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
+                                <td>{cur.durationConsult}</td>
+                                <td>{cur.rating}</td>
+                                <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
+                            </tr>
+                        ))
+                    }
+                    </tbody>
+                </Table>
             </div>
         )
     }

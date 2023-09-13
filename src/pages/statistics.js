@@ -5,6 +5,7 @@ import axios from "axios";
 import 'chart.js/auto';
 import {Pie} from 'react-chartjs-2';
 import {DownloadTableExcel} from 'react-export-table-to-excel'
+import {Table} from "react-bootstrap";
 
 class Statistics extends React.Component {
     constructor(props) {
@@ -23,12 +24,14 @@ class Statistics extends React.Component {
             dispositionCountByAccount: {},
             dispositionCount: [],
             all: [],
+            startTime: "00:00",
+            endTime: "23:59",
             data: {
-                labels: ['Принятые', 'Не дождались ответа'],
+                labels: ['Принятые', 'Потерянные', 'Не дождались ответа'],
                 datasets: [
                     {
                         data: [0, 0],
-                        backgroundColor: ['#FF6384', '#36A2EB']
+                        backgroundColor: ['#FF6384', '#36A2EB', '#edc46b']
                     }
                 ]
             }
@@ -39,8 +42,8 @@ class Statistics extends React.Component {
         this.callDate()
     }
     callDate = () => {
-        const start = this.state.dateTime === "" ? "" : `${this.state.dateTime} 00:00:00`
-        const end = this.state.dateTime2 === "" ? "" : `${this.state.dateTime2} 23:59:59`
+        const start = this.state.dateTime === "" ? "" : `${this.state.dateTime} ${this.state.startTime}:00`
+        const end = this.state.dateTime2 === "" ? "" : `${this.state.dateTime2} ${this.state.endTime}:59`
         axios.get("http://172.16.3.185:8080/api/dispositionCountByAccount",
             {
                 params: {
@@ -50,7 +53,7 @@ class Statistics extends React.Component {
             }).then(res => {
             const r = {}
             res.data.forEach(cur => {
-                r[cur.src] = {
+                r[cur.src.split(' ').join('')] = {
                     ...r[cur.src],
                     [cur.disposition]: cur.count
                 }
@@ -70,19 +73,22 @@ class Statistics extends React.Component {
             })
             const foundCancel = res.data.find(val => val.disposition === "CANCEL")
             const foundAnswered = res.data.find(val => val.disposition === "ANSWERED")
+            const foundNoAnswer = res.data.find(val => val.disposition === "NO ANSWER")
             const answerCount = foundAnswered != null ? foundAnswered.count : 0
             const cancelCount = foundCancel != null ? foundCancel.count : 0
+            const noAnswerCount = foundCancel != null ? foundNoAnswer.count : 0
             this.setState({
                 data: {
                     ...this.state.data,
                     datasets: [
                         {
-                            data: [answerCount, cancelCount],
+                            data: [answerCount, cancelCount, noAnswerCount],
                         }
                     ]
                 },
                 answered: answerCount,
-                canceled: cancelCount
+                canceled: cancelCount,
+                noAnswer: noAnswerCount
             })
         })
         axios.get("http://172.16.3.185:8080/api/calldateBetween", {
@@ -92,7 +98,7 @@ class Statistics extends React.Component {
             }
         }).then(res => {
             const len = res.data.length
-            const avgRating = res.data.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0) / len
+            const avgRating = res.data.reduce((accumulator, currentValue) => currentValue.rating !== 0 ? accumulator + currentValue.rating : accumulator, 0) / len
             const avgWaiting = res.data.reduce((accumulator, currentValue) => accumulator + currentValue.waiting, 0) / len
             const avgDurationConsult = res.data.reduce((accumulator, currentValue) => accumulator + currentValue.durationConsult, 0) / len
             let kz = 0, ru = 0
@@ -135,6 +141,16 @@ class Statistics extends React.Component {
     handleSubmit = () => {
         this.callDate()
     }
+    handleStartTimeChange = (e) => {
+        this.setState({
+            startTime: e.target.value
+        })
+    }
+    handleEndTimeChange = (e) => {
+        this.setState({
+            endTime: e.target.value
+        })
+    }
 
     render() {
         return (
@@ -146,6 +162,10 @@ class Statistics extends React.Component {
                             <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
                             <input name={"date"} type={"date"} className={"ms-1"}
                                    onChange={this.handleEndDateChange}/>
+                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                                   onChange={this.handleStartTimeChange}/>
+                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                                   onChange={this.handleEndTimeChange}/>
                             <input type={"button"} className={"ms-2"} onClick={this.handleSubmit}
                                    value={"Показать"}/>
                         </div>
@@ -155,7 +175,8 @@ class Statistics extends React.Component {
                             <h3>Сводная статистика</h3>
                             <p className={styles.left_item}>Всего звонков {this.state.all}</p>
                             <p className={styles.left_item}>Принятые {this.state.answered}</p>
-                            <p className={styles.left_item}>Не дождались ответа {this.state.canceled}</p>
+                            <p className={styles.left_item}>Потерянные {this.state.canceled}</p>
+                            <p className={styles.left_item}>Не дождались ответа {this.state.noAnswer}</p>
                             <p className={styles.left_item}>Средняя оценка: {this.state.avgRating}</p>
                             <p className={styles.left_item}>Среднее время ожидания: {this.state.avgWaiting} сек.</p>
                             <p className={styles.left_item}>Среднее время
@@ -168,11 +189,12 @@ class Statistics extends React.Component {
                         </div>
                     </div>
                     <div className={"w-100 table-responsive mt-5"}>
-                        <table className={"table"} ref={this.tableRef}>
+                        <Table responsive={true} striped bordered hover ref={this.tableRef}>
                             <thead>
                             <tr>
                                 <th>Агент</th>
                                 <th>Принятые</th>
+                                <th>Потерянные</th>
                                 <th>Не дождались ответа</th>
                             </tr>
                             </thead>
@@ -183,11 +205,12 @@ class Statistics extends React.Component {
                                         <td>{key}</td>
                                         <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWER') ? value.ANSWER : 0}</td>
                                         <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('CANCEL') ? value.CANCEL : 0}</td>
+                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('NOANSWER') ? value.NOANSWER : 0}</td>
                                     </tr>
                                 ))
                             }
                             </tbody>
-                        </table>
+                        </Table>
                         <DownloadTableExcel
                             filename="users table"
                             sheet="users"

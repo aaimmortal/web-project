@@ -177,10 +177,11 @@ class Statistics extends React.Component {
                             <p className={styles.left_item}>Принятые {this.state.answered}</p>
                             <p className={styles.left_item}>Потерянные {this.state.canceled}</p>
                             <p className={styles.left_item}>Не дождались ответа {this.state.noAnswer}</p>
-                            <p className={styles.left_item}>Средняя оценка: {this.state.avgRating}</p>
-                            <p className={styles.left_item}>Среднее время ожидания: {this.state.avgWaiting} сек.</p>
+                            <p className={styles.left_item}>Средняя оценка: {this.state.avgRating.toFixed(2)}</p>
                             <p className={styles.left_item}>Среднее время
-                                консультаций: {this.state.avgDurationConsult} сек.</p>
+                                ожидания: {this.state.avgWaiting.toFixed(2)} сек.</p>
+                            <p className={styles.left_item}>Среднее время
+                                консультаций: {this.state.avgDurationConsult.toFixed(2)} сек.</p>
                             <p className={styles.left_item}>Казахский: {this.state.kz}</p>
                             <p className={styles.left_item}>Русский: {this.state.ru}</p>
                         </div>

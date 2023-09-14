@@ -10,6 +10,8 @@ class Main extends React.Component {
         super(props);
         this.tableRef = React.createRef()
         this.state = {
+            playing: false,
+            pos: 0,
             startDate: "",
             endDate: "",
             startTime: "00:00",
@@ -62,7 +64,7 @@ class Main extends React.Component {
         })
     }
     handleSearchByNumber = () => {
-        if (this.state.search === "Найти по номеру") {
+        if (this.state.search === "Найти по номеру источника") {
             const filteredData = this.state.res.filter(item => item.src.includes(this.state.searchValue))
             this.setState({
                 res: filteredData
@@ -117,6 +119,17 @@ class Main extends React.Component {
             return null
         }
     };
+    formatTime = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    }
     fetchAgentCallData = (cid) => {
         try {
             axios.get("http://172.16.3.185:8080/api/agentCallData", {
@@ -131,6 +144,11 @@ class Main extends React.Component {
         } catch (error) {
             console.log(error)
         }
+    }
+    getDispositionInRussian = (disposition) => {
+        if (disposition === "ANSWERED") return "ОТВЕЧЕН"
+        else if (disposition === "CANCEL") return "ОТМЕНЕН"
+        else if (disposition === "NO ANSWER") return "НЕТ ОТВЕТА"
     }
     openAgentCallData = (cid) => {
         this.fetchAgentCallData(cid)
@@ -215,9 +233,9 @@ class Main extends React.Component {
                                             <td>{cur.src}</td>
                                             <td>{cur.language}</td>
                                             <td>{this.state.agents[cur.dst]}</td>
-                                            <td>{cur.disposition}</td>
-                                            <td>{cur.duration}</td>
-                                            <td>{cur.waiting}</td>
+                                            <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                            <td>{this.formatTime(cur.duration)}</td>
+                                            <td>{this.formatTime(cur.waiting)}</td>
                                             <td>
                                                 <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
                                                     историю
@@ -225,7 +243,7 @@ class Main extends React.Component {
                                             </td>
                                             <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
                                             <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
-                                            <td>{cur.durationConsult}</td>
+                                            <td>{this.formatTime(cur.durationConsult)}</td>
                                             <td>{cur.rating}</td>
                                             <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
                                             <td>
@@ -314,12 +332,12 @@ class Main extends React.Component {
                                 <td>{cur.src}</td>
                                 <td>{cur.language}</td>
                                 <td>{this.state.agents[cur.dst]}</td>
-                                <td>{cur.disposition}</td>
-                                <td>{cur.duration}</td>
-                                <td>{cur.waiting}</td>
+                                <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                <td>{this.formatTime(cur.duration)}</td>
+                                <td>{this.formatTime(cur.waiting)}</td>
                                 <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
                                 <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
-                                <td>{cur.durationConsult}</td>
+                                <td>{this.formatTime(cur.durationConsult)}</td>
                                 <td>{cur.rating}</td>
                                 <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
                             </tr>

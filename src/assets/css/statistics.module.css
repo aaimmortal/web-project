@@ -35,6 +35,42 @@
     width: 45%;
 }
 
+.desc {
+    position: relative;
+    cursor: pointer /* Needed for positioning the tooltip */
+}
+
+.desc::after {
+    position: absolute;
+    top: 100%; /* Position the tooltip below the link */
+    left: 0;
+    width: 100%; /* Make the tooltip full width */
+    background-color: #333; /* Tooltip background color */
+    z-index: 100;
+    color: #fff; /* Tooltip text color */
+    padding: 5px; /* Add some padding for better readability */
+    font-size: 14px; /* Set the font size */
+    opacity: 0; /* Initially, make the tooltip invisible */
+    transition: opacity 0.2s; /* Add a smooth transition effect */
+    pointer-events: none; /* Prevent the tooltip from interfering with link clicks */
+}
+
+.answered::after {
+    content: "Принятые звонки - ...";
+}
+
+.canceled::after {
+    content: "Потерянные звонки - ...";
+}
+
+.noAnswer::after {
+    content: "Принятые несвоевременно - ...";
+}
+
+.desc:hover::after {
+    opacity: 1;
+}
+
 @media screen and (max-width: 520px) {
     .page {
         display: block;

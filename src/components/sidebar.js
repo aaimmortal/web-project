@@ -23,7 +23,7 @@ class Sidebar extends React.Component {
                     icon: <AiOutlineBarChart/>
                 },
                 {
-                    path: "#",
+                    path: "/agents",
                     name: "Список пользователей",
                     icon: <FaUsers/>
                 },

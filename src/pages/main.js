@@ -146,9 +146,13 @@ class Main extends React.Component {
         }
     }
     getDispositionInRussian = (disposition) => {
-        if (disposition === "ANSWERED") return "ОТВЕЧЕН"
+        if (disposition === "ANSWERED" || disposition === "ANSWER") return "ОТВЕЧЕН"
         else if (disposition === "CANCEL") return "ОТМЕНЕН"
-        else if (disposition === "NO ANSWER") return "НЕТ ОТВЕТА"
+        else if (disposition === "NO ANSWER" || disposition === "NOANSWER") return "НЕТ ОТВЕТА"
+    }
+    getAgentById = (id) => {
+        if (id === "7001") return "Каламкас"
+        else if (id === "7002") return "Аружан"
     }
     openAgentCallData = (cid) => {
         this.fetchAgentCallData(cid)
@@ -292,8 +296,8 @@ class Main extends React.Component {
                                 {
                                     this.state.agentCallData.map(cur => (
                                         <tr>
-                                            <td>{cur.agentid}</td>
-                                            <td>{cur.disposition}</td>
+                                            <td>{this.getAgentById(cur.agentid)}</td>
+                                            <td>{this.getDispositionInRussian(cur.disposition)}</td>
                                         </tr>
                                     ))
                                 }

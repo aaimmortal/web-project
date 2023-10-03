@@ -27,7 +27,7 @@ class Statistics extends React.Component {
             startTime: "00:00",
             endTime: "23:59",
             data: {
-                labels: ['Принятые', 'Потерянные', 'Не дождались ответа'],
+                labels: ['Принятые', 'Потерянные', 'Принятые несвоевременно'],
                 datasets: [
                     {
                         data: [0, 0],
@@ -61,22 +61,15 @@ class Statistics extends React.Component {
             this.setState({
                 dispositionCountByAccount: r
             })
-        })
-        axios.get("http://172.16.3.185:8080/api/dispositionCount", {
-            params: {
-                dateTime: start,
-                dateTime2: end
-            }
-        }).then(res => {
-            this.setState({
-                dispositionCount: res.data
-            })
-            const foundCancel = res.data.find(val => val.disposition === "CANCEL")
-            const foundAnswered = res.data.find(val => val.disposition === "ANSWERED")
-            const foundNoAnswer = res.data.find(val => val.disposition === "NO ANSWER")
-            const answerCount = foundAnswered != null ? foundAnswered.count : 0
-            const cancelCount = foundCancel != null ? foundCancel.count : 0
-            const noAnswerCount = foundCancel != null ? foundNoAnswer.count : 0
+            const keys = Object.keys(r);
+            let answerCount = 0
+            let cancelCount = 0
+            let noAnswerCount = 0
+            keys.forEach(key => {
+                answerCount += r[key].hasOwnProperty('ANSWER') ? r[key].ANSWER : 0
+                cancelCount += r[key].hasOwnProperty('CANCEL') ? r[key].CANCEL : 0
+                noAnswerCount += r[key].hasOwnProperty('NOANSWER') ? r[key].NOANSWER : 0
+            });
             this.setState({
                 data: {
                     ...this.state.data,
@@ -90,6 +83,8 @@ class Statistics extends React.Component {
                 canceled: cancelCount,
                 noAnswer: noAnswerCount
             })
+
+            console.log(r)
         })
         axios.get("http://172.16.3.185:8080/api/calldateBetween", {
             params: {
@@ -151,6 +146,10 @@ class Statistics extends React.Component {
             endTime: e.target.value
         })
     }
+    getNameByNumber = (number) => {
+        if (number === "7001") return 'Каламкас'
+        if (number === "7002") return 'Аружан'
+    }
 
     render() {
         return (
@@ -174,9 +173,9 @@ class Statistics extends React.Component {
                         <div className={styles.left}>
                             <h3>Сводная статистика</h3>
                             <p className={styles.left_item}>Всего звонков {this.state.all}</p>
-                            <p className={styles.left_item}>Принятые {this.state.answered}</p>
-                            <p className={styles.left_item}>Потерянные {this.state.canceled}</p>
-                            <p className={styles.left_item}>Не дождались ответа {this.state.noAnswer}</p>
+                            <p className={`${styles.left_item} ${styles.desc} ${styles.answered}`}>Принятые {this.state.answered}</p>
+                            <p className={`${styles.left_item} ${styles.desc} ${styles.canceled}`}>Потерянные {this.state.canceled}</p>
+                            <p className={`${styles.left_item} ${styles.desc} ${styles.noAnswer}`}>Принятые несвоевременно {this.state.noAnswer}</p>
                             <p className={styles.left_item}>Средняя оценка: {this.state.avgRating.toFixed(2)}</p>
                             <p className={styles.left_item}>Среднее время
                                 ожидания: {this.state.avgWaiting.toFixed(2)} сек.</p>
@@ -196,17 +195,33 @@ class Statistics extends React.Component {
                                 <th>Агент</th>
                                 <th>Принятые</th>
                                 <th>Потерянные</th>
-                                <th>Не дождались ответа</th>
+                                <th>Принятые несвоевременно</th>
+                                <th>Все принятые</th>
+                                <th>Все потерянные</th>
+                                <th>Все принятые несвоевременно</th>
+                                <th>Ср. оценка</th>
+                                <th>Ср. время ож.</th>
+                                <th>Ср. время конс.</th>
+                                <th>Каз</th>
+                                <th>Рус</th>
                             </tr>
                             </thead>
                             <tbody>
                             {
                                 Object.entries(this.state.dispositionCountByAccount).map(([key, value]) => (
                                     <tr>
-                                        <td>{key}</td>
+                                        <td>{this.getNameByNumber(key)}</td>
                                         <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWER') ? value.ANSWER : 0}</td>
                                         <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('CANCEL') ? value.CANCEL : 0}</td>
                                         <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('NOANSWER') ? value.NOANSWER : 0}</td>
+                                        <td>{this.state.answered}</td>
+                                        <td>{this.state.canceled}</td>
+                                        <td>{this.state.noAnswer}</td>
+                                        <td>{this.state.avgRating.toFixed(2)}</td>
+                                        <td>{this.state.avgWaiting.toFixed(2)}</td>
+                                        <td>{this.state.avgDurationConsult.toFixed(2)}</td>
+                                        <td>{this.state.kz}</td>
+                                        <td>{this.state.ru}</td>
                                     </tr>
                                 ))
                             }

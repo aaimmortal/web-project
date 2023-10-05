@@ -41,7 +41,7 @@ class Agent extends React.Component {
                             this.state.data.map(cur => (
                                 <tr>
                                     <td>{this.getNameByNumber(cur.agentid)}</td>
-                                    <td>{cur.date}</td>
+                                    <td>{cur.date.replace('T', " ")}</td>
                                     <td>{cur.action}</td>
                                 </tr>
                             ))

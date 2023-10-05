@@ -11,15 +11,25 @@ class Agent extends React.Component {
             data: []
         }
     }
+
     getNameByNumber = (number) => {
         if (number === "7001") return 'Каламкас'
         if (number === "7002") return 'Аружан'
     }
+
     componentDidMount() {
         axios.get('http://172.16.3.185:8080/api/wfm').then(res => {
             this.setState({
                 data: res.data
             })
+        })
+        axios.get("http://172.16.3.185:8088/ari/api-docs/resources.json", {
+            auth: {
+                username: 'myuser',
+                password: 'mypassword'
+            }
+        }).then(res => {
+            console.log(res)
         })
     }
 

@@ -4,6 +4,9 @@
     max-width: 100%;
     display: flex;
 }
+.inputDateTime {
+    margin-left: 7px;
+}
 @media screen and (max-width: 520px) {
     .page {
         display: block;

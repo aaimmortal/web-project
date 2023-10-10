@@ -34,29 +34,6 @@ class Wfm extends React.Component {
             date: e.target.value
         })
     }
-    items = [
-        {
-            id: 1,
-            group: 1,
-            title: 'item 1',
-            start_time: moment("2023-10-10T14:30:00"),
-            end_time: moment("2023-10-10T14:30:00").add(1, 'hour'),
-        },
-        {
-            id: 2,
-            group: 2,
-            title: 'item 2',
-            start_time: moment().add(-0.5, 'hour'),
-            end_time: moment().add(0.5, 'hour')
-        },
-        {
-            id: 3,
-            group: 1,
-            title: 'item 3',
-            start_time: moment().add(2, 'hour'),
-            end_time: moment().add(3, 'hour')
-        }
-    ]
 
     handleSubmit = () => {
         axios.get("http://172.16.3.185:8080/api/wfmGraph", {
@@ -65,7 +42,6 @@ class Wfm extends React.Component {
                 date: this.state.date
             }
         }).then(res => {
-
             const temp = res.data
             const items = []
             for (let i = 0; i < temp.length - 1; i++) {
@@ -105,9 +81,9 @@ class Wfm extends React.Component {
                         <input type={"button"} className={styles.inputDate} onClick={this.handleSubmit}
                                value={"Показать"}/>
                     </div>
-                    <div className={"mt-3"} style={{maxWidth: "100%"}}>
+                    <div className={"mt-3"}>
                         <Timeline
-                            style={{width: "1200px"}}
+                            style={{maxWidth: "1200px"}}
                             groups={this.state.groups}
                             items={this.state.items}
                             defaultTimeStart={moment().add(-12, 'hour')}

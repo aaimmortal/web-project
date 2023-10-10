@@ -1,7 +1,7 @@
 import React from "react";
 import {TbReportSearch} from "react-icons/tb";
 import {FaUsers} from "react-icons/fa";
-import {BiLogOut} from "react-icons/bi";
+import {BiLogOut, BiTime} from "react-icons/bi";
 import {AiOutlineBarChart, AiOutlineUserAdd, AiOutlineMenu} from "react-icons/ai";
 import {NavLink} from "react-router-dom";
 import styles from "../assets/css/sidebar.module.css"
@@ -24,8 +24,13 @@ class Sidebar extends React.Component {
                 },
                 {
                     path: "/agents",
-                    name: "Список пользователей",
+                    name: "Учет рабочего времени операторов",
                     icon: <FaUsers/>
+                },
+                {
+                    path: "/wfm",
+                    name: "График учета рабочего времени операторов",
+                    icon: <BiTime/>
                 },
                 {
                     path: "/register",

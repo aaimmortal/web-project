@@ -208,7 +208,7 @@ class Main extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className={`mt-3`} style={{width: "1300px"}}>
+                        <div className={`mt-3`} style={{width: "1200px"}}>
                             <Table responsive={true} striped bordered hover>
                                 <thead>
                                 <tr>

@@ -16,12 +16,22 @@ class Agent extends React.Component {
             startTime: "00:00",
             endTime: "23:59",
             searchValue: "",
+            agents: {
+                7001: "Каламкас",
+                7002: "Аружан"
+            }
         }
     }
 
     getNameByNumber = (number) => {
-        if (number === "7001") return 'Каламкас'
-        if (number === "7002") return 'Аружан'
+        switch (number) {
+            case "7001":
+                return 'Каламкас'
+            case "7002":
+                return 'Аружан'
+            default:
+                return "-"
+        }
     }
     getActionByName = (action) => {
         switch (action) {
@@ -79,7 +89,19 @@ class Agent extends React.Component {
             console.log(err.response.data)
         })
     }
-
+    handleSearch = () => {
+        let target = ""
+        for (const key in this.state.agents) {
+            if (this.state.agents[key] === this.state.searchValue) {
+                target = key
+                break
+            }
+        }
+        const filteredData = this.state.data.filter(item => item.agentid === target)
+        this.setState({
+            data: filteredData
+        })
+    }
     componentDidMount() {
     }
 
@@ -107,7 +129,7 @@ class Agent extends React.Component {
                         <div>
                             <input type={"search"} placeholder={"Найти по агенту"}
                                    onChange={this.handleInputChange}/>
-                            <button>Найти</button>
+                            <button onClick={this.handleSearch}>Найти</button>
                         </div>
                     </div>
                     <div className={"w-100 p-3"} style={{width: "1300px"}}>

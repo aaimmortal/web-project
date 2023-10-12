@@ -5,6 +5,7 @@ import axios from "axios";
 import Timeline from 'react-calendar-timeline'
 import moment from "moment";
 import 'react-calendar-timeline/lib/Timeline.css'
+import Select from 'react-select';
 
 class Wfm extends React.Component {
     constructor(props) {
@@ -12,23 +13,18 @@ class Wfm extends React.Component {
         this.state = {
             searchAgent: "7001",
             date: "",
-            res: [],
             items: [],
-            groups: [
-                {
-                    id: 1,
-                    title: "7001"
-                }
-            ]
-
+            groups: [],
+            selectedOptions: [],
+            options: [
+                {label: '7001', value: '7001'},
+                {label: '7002', value: '7002'},
+            ],
+            start: moment().startOf("day").toDate(),
+            end: moment().startOf("day").add(1, "day").toDate()
         }
     }
 
-    handleSearchChange = (e) => {
-        this.setState({
-            searchAgent: e.target.value
-        })
-    }
     handleDateChange = (e) => {
         this.setState({
             date: e.target.value
@@ -36,58 +32,80 @@ class Wfm extends React.Component {
     }
 
     handleSubmit = () => {
+        axios.get("http://172.16.3.185:8080/api/agents").then(res => {
+            console.log(res.data)
+        })
+        const agents = this.state.selectedOptions.map(cur => cur.value).join(" ")
         axios.get("http://172.16.3.185:8080/api/wfmGraph", {
             params: {
-                agentid: this.state.searchAgent,
+                agents: agents,
                 date: this.state.date
             }
         }).then(res => {
             const temp = res.data
             const items = []
-            for (let i = 0; i < temp.length - 1; i++) {
-                items.push({
+            const groups = []
+            for (let i = 0; i < temp.length; i++) {
+                groups.push({
                     id: i,
-                    group: 1,
-                    title: temp[i].action === "UNPAUSED" ? "Login" : temp[i].action,
-                    start_time: moment(temp[i].date),
-                    end_time: moment(temp[i + 1].date),
-                    itemProps: {
-                        style: {
-                            background: (temp[i].action === "Login" || temp[i].action ===  "UNPAUSED") ? 'green' : 'red'
-                        }
-                    }
+                    title: this.state.selectedOptions[i].value
                 })
+                for (let j = 0; j < temp[i].length - 1; j++) {
+                    items.push({
+                        id: j,
+                        group: i,
+                        start_time: moment(temp[i][j].date),
+                        end_time: moment(temp[i][j + 1].date),
+                        itemProps: {
+                            style: {
+                                background: (temp[i][j].action === "Login" || temp[i][j].action === "UNPAUSED") ? 'green' : 'red'
+                            }
+                        }
+                    })
+                }
             }
             this.setState({
-                res: res.data,
-                items: items
+                items: items,
+                groups: groups,
+                start: moment(this.state.date),
+                end: moment(this.state.date).add(1, "day").toDate()
             })
-            console.log(items)
         })
     }
+    handleSelectChange = (selected) => {
+        this.setState({
+            selectedOptions: selected
+        });
+    };
 
     render() {
         return (
             <div className={styles.page}>
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
-                    <div className={"w-100"}>
-                        <select onChange={this.handleSearchChange}>
-                            <option>7001</option>
-                            <option>7002</option>
-                        </select>
-                        <input name={"date"} className={styles.inputDate} type={"date"}
-                               onChange={this.handleDateChange}/>
-                        <input type={"button"} className={styles.inputDate} onClick={this.handleSubmit}
-                               value={"Показать"}/>
+                    <div className={"w-100 d-flex align-items-center"}>
+                        <Select
+                            options={this.state.options}
+                            isMulti
+                            value={this.selectedOptions}
+                            onChange={this.handleSelectChange}
+                        />
+                        <div>
+                            <input name={"date"} className={styles.inputDate} type={"date"}
+                                   onChange={this.handleDateChange}/>
+                            <input type={"button"} className={styles.inputDate} onClick={this.handleSubmit}
+                                   value={"Показать"}/>
+                        </div>
                     </div>
                     <div className={"mt-3"}>
                         <Timeline
                             style={{maxWidth: "1200px"}}
                             groups={this.state.groups}
                             items={this.state.items}
-                            defaultTimeStart={moment().add(-12, 'hour')}
-                            defaultTimeEnd={moment().add(12, 'hour')}
+                            canMove={false}
+                            canResize={false}
+                            defaultTimeStart={this.state.start}
+                            defaultTimeEnd={this.state.end}
                         />
                     </div>
                 </div>

@@ -6,6 +6,7 @@ import Timeline from 'react-calendar-timeline'
 import moment from "moment";
 import 'react-calendar-timeline/lib/Timeline.css'
 import Select from 'react-select';
+import {Button, Form} from "react-bootstrap";
 
 class Wfm extends React.Component {
     constructor(props) {
@@ -90,12 +91,11 @@ class Wfm extends React.Component {
                             value={this.selectedOptions}
                             onChange={this.handleSelectChange}
                         />
-                        <div>
-                            <input name={"date"} className={styles.inputDate} type={"date"}
+                        <Form.Group className={"d-flex"}>
+                            <Form.Control name={"date"} className={styles.inputDate} type={"date"}
                                    onChange={this.handleDateChange}/>
-                            <input type={"button"} className={styles.inputDate} onClick={this.handleSubmit}
-                                   value={"Показать"}/>
-                        </div>
+                            <Button variant={"outline-primary"} className={"ms-1"} onClick={this.handleSubmit}>Показать</Button>
+                        </Form.Group>
                     </div>
                     <div className={"mt-3"}>
                         <Timeline

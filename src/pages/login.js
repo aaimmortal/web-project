@@ -1,6 +1,7 @@
 import React from "react";
 import styles from '../assets/css/login.module.css'
 import axios from "axios";
+import {Button, Form} from "react-bootstrap";
 
 class Login extends React.Component {
     constructor(props) {
@@ -56,16 +57,16 @@ class Login extends React.Component {
                     <div className={styles.banner}>
                         <p>Мониторинг записей телефонных звонков </p>
                     </div>
-                    <div className={"w-100 d-flex justify-content-center"}>
-                        <form>
+                    <div className={"w-100 h-50 d-flex justify-content-center align-items-center"}>
+                        <Form.Floating>
                             <h5> Введите имя пользователя и пароль</h5>
                             <hr/>
                             <div className={"d-flex flex-column"}>
-                                <input type={"text"} placeholder={"Логин"} onChange={this.handleLoginChange}/>
-                                <input className={"mt-2"} type={"password"} placeholder={"Пароль"}
+                                <Form.Control type={"text"} placeholder={"Логин"} onChange={this.handleLoginChange}/>
+                                <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
                                        onChange={this.handlePasswordChange}/>
                             </div>
-                            <button onClick={this.login}>Подключиться</button>
+                            <Button variant={"outline-primary"} className={"mt-3"} onClick={this.login}>Подключиться</Button>
                             {
                                 this.state.errorText !== "" && (
                                     <div className={styles.alert_error}>
@@ -73,7 +74,7 @@ class Login extends React.Component {
                                     </div>
                                 )
                             }
-                        </form>
+                        </Form.Floating>
                     </div>
                 </div>
             </div>

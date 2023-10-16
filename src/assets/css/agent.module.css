@@ -1,6 +1,6 @@
 .page {
     min-height: 100vh;
-    background-color: aliceblue;
+    background-color: #f8f9fa;
     max-width: 100%;
     display: flex;
 }

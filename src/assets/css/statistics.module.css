@@ -1,7 +1,6 @@
 .page {
     min-height: 100vh;
-    background-color: aliceblue;
-    max-width: 100%;
+    background-color: #f8f9fa;
     display: flex;
 }
 
@@ -18,9 +17,6 @@
 }
 
 .left {
-    background-color: white;
-    border: 1px solid black;
-    padding: 10px;
     width: 45%;
 }
 
@@ -29,9 +25,6 @@
 }
 
 .right {
-    background-color: white;
-    border: 1px solid black;
-    padding: 10px;
     width: 45%;
 }
 

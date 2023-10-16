@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/sidebar";
 import styles from '../assets/css/agent.module.css'
-import {Table} from "react-bootstrap";
+import {Button, Form, Table} from "react-bootstrap";
 import axios from "axios";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 
@@ -111,26 +111,25 @@ class Agent extends React.Component {
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
                     <div className={"w-100 d-flex justify-content-between"}>
-                        <div>
-                            <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                            <input name={"date"} type={"date"} className={styles.inputDateTime}
+                        <Form.Group className={"d-flex"}>
+                            <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                            <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
                                    onChange={this.handleEndDateChange}/>
-                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
                                    onChange={this.handleStartTimeChange}/>
-                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
                                    onChange={this.handleEndTimeChange}/>
-                            <input type={"button"} className={styles.inputDateTime} onClick={this.handleSubmit}
-                                   value={"Показать"}/>
+                            <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime} onClick={this.handleSubmit}>Показать</Button>
                             <DownloadTableExcel filename="users table" sheet="users"
                                                 currentTableRef={this.tableRef.current}>
-                                <button className={styles.inputDateTime}> Экспорт эксель</button>
+                                <Button variant={"outline-success"} className={styles.inputDateTime}> Экспорт</Button>
                             </DownloadTableExcel>
-                        </div>
-                        <div>
-                            <input type={"search"} placeholder={"Найти по агенту"}
+                        </Form.Group>
+                        <Form.Group className={"d-flex"}>
+                            <Form.Control type={"search"} placeholder={"Найти по агенту"}
                                    onChange={this.handleInputChange}/>
-                            <button onClick={this.handleSearch}>Найти</button>
-                        </div>
+                            <Button variant={"outline-primary"} onClick={this.handleSearch}>Найти</Button>
+                        </Form.Group>
                     </div>
                     <div className={"w-100 p-3"} style={{width: "1300px"}}>
                         <Table responsive={true} striped bordered hover ref={this.tableRef}>

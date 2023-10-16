@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../assets/css/main.module.css"
 import Sidebar from "../components/sidebar.js";
 import axios from "axios";
-import {Button, Modal, Table} from "react-bootstrap";
+import {Button, Form, Modal, Table} from "react-bootstrap";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 
 class Main extends React.Component {
@@ -176,105 +176,104 @@ class Main extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div>
-                    <div className={"w-100 p-3"}>
-                        <div className={"d-flex align-items-center"}>
-                            <div className={"w-100 d-flex justify-content-between"}>
-                                <div>
-                                    <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                                    <input name={"date"} type={"date"} className={styles.inputDateTime}
-                                           onChange={this.handleEndDateChange}/>
-                                    <input name={"date"} type={"time"} className={styles.inputDateTime}
-                                           onChange={this.handleStartTimeChange}/>
-                                    <input name={"date"} type={"time"} className={styles.inputDateTime}
-                                           onChange={this.handleEndTimeChange}/>
-                                    <input type={"button"} className={styles.inputDateTime} onClick={this.handleSubmit}
-                                           value={"Показать"}/>
-                                    <DownloadTableExcel filename="users table" sheet="users"
-                                                        currentTableRef={this.tableRef.current}>
-                                        <button className={styles.inputDateTime}> Экспорт эксель</button>
-                                    </DownloadTableExcel>
-                                </div>
-                                <div className={"d-flex align-items-center"}>
-                                    <select onChange={this.handleSearchChange}>
-                                        <option>Найти по фио</option>
-                                        <option>Найти по номеру источника</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <input type={"search"} placeholder={this.state.search}
-                                           onChange={this.handleInputChange}/>
-                                    <button onClick={this.handleSearchByNumber}>Найти</button>
-                                </div>
-                            </div>
+                <div className={"w-100 p-3"}>
+                    <div className={"w-100 d-flex align-items-center"}>
+                        <div className={"w-100 d-flex align-items-center justify-content-between"}>
+                            <Form.Group className={"d-flex"}>
+                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
+                                              onChange={this.handleEndDateChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleStartTimeChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleEndTimeChange}/>
+                                <Button variant={"outline-primary"} onClick={this.handleSubmit}
+                                        className={styles.inputDateTime}>Показать</Button>
+                                <DownloadTableExcel filename="users table" sheet="users"
+                                                    currentTableRef={this.tableRef.current}>
+                                    <Button variant={"outline-success"}
+                                            className={styles.inputDateTime}> Экспорт</Button>
+                                </DownloadTableExcel>
+                            </Form.Group>
+                            <Form.Group className={"d-flex align-items-center"} style={{width: ""}}>
+                                <Form.Select aria-label="Default select example" onChange={this.handleSearchChange}>
+                                    <option>Найти по фио</option>
+                                    <option>Найти по номеру источника</option>
+                                </Form.Select>
+                            </Form.Group>
+                            <Form.Group className={"d-flex"}>
+                                <Form.Control type={"search"} placeholder={this.state.search}
+                                              onChange={this.handleInputChange}/>
+                                <Button variant={"outline-primary"} onClick={this.handleSearchByNumber}>Найти</Button>
+                            </Form.Group>
                         </div>
-                        <div className={`mt-3`} style={{width: "1200px"}}>
-                            <Table responsive={true} striped bordered hover>
-                                <thead>
-                                <tr>
-                                    <th scope="col">Дата</th>
-                                    <th scope="col">Источник</th>
-                                    <th scope="col">Язык</th>
-                                    <th scope="col">ФИО</th>
-                                    <th scope="col">Статус</th>
-                                    <th scope="col">Продолжительность</th>
-                                    <th scope="col">Ожидание</th>
-                                    <th scope="col">Перенап</th>
-                                    <th scope="col">Подключился</th>
-                                    <th scope="col">Отключился</th>
-                                    <th scope="col">Разговор</th>
-                                    <th scope="col">Оценка</th>
-                                    <th scope="col">Сбросил</th>
-                                    <th scope="col">Скачать</th>
-                                    <th scope="col">Аудио</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {
-                                    this.state.res.map(cur => (
-                                        <tr>
-                                            <td>{cur.calldate.replace('T', " ")}</td>
-                                            <td>{cur.src}</td>
-                                            <td>{cur.language}</td>
-                                            <td>{this.state.agents[cur.dst]}</td>
-                                            <td>{this.getDispositionInRussian(cur.disposition)}</td>
-                                            <td>{this.formatTime(cur.duration)}</td>
-                                            <td>{this.formatTime(cur.waiting)}</td>
-                                            <td>
-                                                <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
-                                                    историю
-                                                </button>
-                                            </td>
-                                            <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
-                                            <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
-                                            <td>{this.formatTime(cur.durationConsult)}</td>
-                                            <td>{cur.rating}</td>
-                                            <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
-                                            <td>
-                                                {
-                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                    </div>
+                    <div className={`mt-3`} style={{width: "1300px"}}>
+                        <Table responsive={true} striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Источник</th>
+                                <th scope="col">Язык</th>
+                                <th scope="col">ФИО</th>
+                                <th scope="col">Статус</th>
+                                <th scope="col">Продолжительность</th>
+                                <th scope="col">Ожидание</th>
+                                <th scope="col">Перенап</th>
+                                <th scope="col">Подключился</th>
+                                <th scope="col">Отключился</th>
+                                <th scope="col">Разговор</th>
+                                <th scope="col">Оценка</th>
+                                <th scope="col">Сбросил</th>
+                                <th scope="col">Скачать</th>
+                                <th scope="col">Аудио</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.res.map(cur => (
+                                    <tr>
+                                        <td>{cur.calldate.replace('T', " ")}</td>
+                                        <td>{cur.src}</td>
+                                        <td>{cur.language}</td>
+                                        <td>{this.state.agents[cur.dst]}</td>
+                                        <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                        <td>{this.formatTime(cur.duration)}</td>
+                                        <td>{this.formatTime(cur.waiting)}</td>
+                                        <td>
+                                            <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
+                                                историю
+                                            </button>
+                                        </td>
+                                        <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
+                                        <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
+                                        <td>{this.formatTime(cur.durationConsult)}</td>
+                                        <td>{cur.rating}</td>
+                                        <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
+                                        <td>
+                                            {
+                                                (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                    <button
+                                                        onClick={() => this.handleDownload(cur.uniqueid)}>Скачать
+                                                    </button>
+                                            }
+                                        </td>
+                                        <td>
+                                            {
+                                                (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                    <div className={"d-flex"}>
                                                         <button
-                                                            onClick={() => this.handleDownload(cur.uniqueid)}>Скачать
+                                                            onClick={() => this.setAudioSrc(cur.uniqueid)}>Прослушать
                                                         </button>
-                                                }
-                                            </td>
-                                            <td>
-                                                {
-                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
-                                                        <div className={"d-flex"}>
-                                                            <button
-                                                                onClick={() => this.setAudioSrc(cur.uniqueid)}>Прослушать
-                                                            </button>
-                                                            <audio id={cur.uniqueid} controls type="audio/wav"/>
-                                                        </div>
-                                                }
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
-                                </tbody>
-                            </Table>
-                        </div>
+                                                        <audio id={cur.uniqueid} controls type="audio/wav"/>
+                                                    </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </Table>
                     </div>
                 </div>
                 <Modal show={this.state.show}>

@@ -1,6 +1,6 @@
 .page {
     height: 100vh;
-    background-color: aliceblue;
+    background-color: #f8f9fa;
     display: flex;
     justify-content: center;
 }

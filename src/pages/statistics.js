@@ -5,7 +5,7 @@ import axios from "axios";
 import 'chart.js/auto';
 import {Pie} from 'react-chartjs-2';
 import {DownloadTableExcel} from 'react-export-table-to-excel'
-import {Table} from "react-bootstrap";
+import {Button, Card, Form, ListGroup, Table} from "react-bootstrap";
 
 class Statistics extends React.Component {
     constructor(props) {
@@ -157,36 +157,42 @@ class Statistics extends React.Component {
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
                     <div className={"w-100 d-flex align-items-center"}>
-                        <div>
-                            <input name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                            <input name={"date"} type={"date"} className={"ms-1"}
+                        <Form.Group className={"d-flex"}>
+                            <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                            <Form.Control name={"date"} type={"date"} className={"ms-1"}
                                    onChange={this.handleEndDateChange}/>
-                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
                                    onChange={this.handleStartTimeChange}/>
-                            <input name={"date"} type={"time"} className={styles.inputDateTime}
+                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
                                    onChange={this.handleEndTimeChange}/>
-                            <input type={"button"} className={"ms-2"} onClick={this.handleSubmit}
-                                   value={"Показать"}/>
-                        </div>
+                            <Button variant={"outline-primary"} onClick={this.handleSubmit} className={"ms-2"}>Показать</Button>
+                        </Form.Group>
                     </div>
                     <div className={styles.left_right}>
-                        <div className={styles.left}>
-                            <h3>Сводная статистика</h3>
-                            <p className={styles.left_item}>Всего звонков {this.state.all}</p>
-                            <p className={`${styles.left_item} ${styles.desc} ${styles.answered}`}>Принятые {this.state.answered}</p>
-                            <p className={`${styles.left_item} ${styles.desc} ${styles.canceled}`}>Потерянные {this.state.canceled}</p>
-                            <p className={`${styles.left_item} ${styles.desc} ${styles.noAnswer}`}>Принятые несвоевременно {this.state.noAnswer}</p>
-                            <p className={styles.left_item}>Средняя оценка: {this.state.avgRating.toFixed(2)}</p>
-                            <p className={styles.left_item}>Среднее время
-                                ожидания: {this.state.avgWaiting.toFixed(2)} сек.</p>
-                            <p className={styles.left_item}>Среднее время
-                                консультаций: {this.state.avgDurationConsult.toFixed(2)} сек.</p>
-                            <p className={styles.left_item}>Казахский: {this.state.kz}</p>
-                            <p className={styles.left_item}>Русский: {this.state.ru}</p>
-                        </div>
-                        <div className={styles.right}>
+                        <Card className={styles.left}>
+                            <Card.Header>Сводная статистика</Card.Header>
+                            <ListGroup variant="flush">
+                                <ListGroup.Item className={styles.left_item}>Всего
+                                    звонков {this.state.all}</ListGroup.Item>
+                                <ListGroup.Item
+                                    className={`${styles.left_item} ${styles.desc} ${styles.answered}`}>Принятые {this.state.answered}</ListGroup.Item>
+                                <ListGroup.Item
+                                    className={`${styles.left_item} ${styles.desc} ${styles.canceled}`}>Потерянные {this.state.canceled}</ListGroup.Item>
+                                <ListGroup.Item className={`${styles.left_item} ${styles.desc} ${styles.noAnswer}`}>Принятые
+                                    несвоевременно {this.state.noAnswer}</ListGroup.Item>
+                                <ListGroup.Item className={styles.left_item}>Средняя
+                                    оценка: {this.state.avgRating.toFixed(2)}</ListGroup.Item>
+                                <ListGroup.Item className={styles.left_item}>Среднее время
+                                    ожидания: {this.state.avgWaiting.toFixed(2)} сек.</ListGroup.Item>
+                                <ListGroup.Item className={styles.left_item}>Среднее время
+                                    консультаций: {this.state.avgDurationConsult.toFixed(2)} сек.</ListGroup.Item>
+                                <ListGroup.Item className={styles.left_item}>Казахский: {this.state.kz}</ListGroup.Item>
+                                <ListGroup.Item className={styles.left_item}>Русский: {this.state.ru}</ListGroup.Item>
+                            </ListGroup>
+                        </Card>
+                        <Card className={styles.right}>
                             <Pie data={this.state.data} options={this.options}/>
-                        </div>
+                        </Card>
                     </div>
                     <div className={"w-100 table-responsive mt-5"}>
                         <Table responsive={true} striped bordered hover ref={this.tableRef}>
@@ -232,7 +238,7 @@ class Statistics extends React.Component {
                             sheet="users"
                             currentTableRef={this.tableRef.current}
                         >
-                            <button> Export excel</button>
+                            <Button variant={"outline-success"}> Export excel</Button>
                         </DownloadTableExcel>
                     </div>
                 </div>

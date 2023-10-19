@@ -1,9 +1,10 @@
 .background {
     background-color: #282b2e;
-    width: 250px;
+    width: 200px;
     min-height: 100vh;
     padding: 5px;
     border-radius: 0 5px 0 5px;
+    font-family: sans-serif;
 }
 
 .active {
@@ -30,23 +31,32 @@
 .menuItem {
     color: #f8f9fa;
     text-decoration: none;
-    margin-top: 20px;
-}
 
+}
+.cur {
+    border-radius: 10px;
+    padding: 5px;
+}
 .icon {
     font-size: 21px;
 }
 
 .icon_text {
     font-size: 15px;
+    margin-left: 7px;
 }
 .sub {
-    margin-left: 10px;
     display: none;
-    transition: max-height 0.5s ease-in-out;
 }
 .activeSub {
     display: block;
+    margin-left: 10px;
+}
+.activeItem {
+    background-color: white;
+    color: #333333;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 @media screen and (max-width: 520px) {

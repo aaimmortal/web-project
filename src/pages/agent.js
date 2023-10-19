@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/sidebar";
 import styles from '../assets/css/agent.module.css'
-import {Button, Form, Table} from "react-bootstrap";
+import {Button, Card, Form, Table} from "react-bootstrap";
 import axios from "axios";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 
@@ -102,36 +102,41 @@ class Agent extends React.Component {
             data: filteredData
         })
     }
+
     componentDidMount() {
     }
 
     render() {
         return (
             <div className={styles.page}>
-                <Sidebar/>
+                <Sidebar path={"/agents"}/>
                 <div className={"w-100 p-3"}>
-                    <div className={"w-100 d-flex justify-content-between"}>
-                        <Form.Group className={"d-flex"}>
-                            <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                            <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
-                                   onChange={this.handleEndDateChange}/>
-                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
-                                   onChange={this.handleStartTimeChange}/>
-                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
-                                   onChange={this.handleEndTimeChange}/>
-                            <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime} onClick={this.handleSubmit}>Показать</Button>
-                            <DownloadTableExcel filename="users table" sheet="users"
-                                                currentTableRef={this.tableRef.current}>
-                                <Button variant={"outline-success"} className={styles.inputDateTime}> Экспорт</Button>
-                            </DownloadTableExcel>
-                        </Form.Group>
-                        <Form.Group className={"d-flex"}>
-                            <Form.Control type={"search"} placeholder={"Найти по агенту"}
-                                   onChange={this.handleInputChange}/>
-                            <Button variant={"outline-primary"} onClick={this.handleSearch}>Найти</Button>
-                        </Form.Group>
-                    </div>
-                    <div className={"w-100 p-3"} style={{width: "1300px"}}>
+                    <Card>
+                        <Card.Body>
+                            <Form.Group className={"d-flex"}>
+                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
+                                              onChange={this.handleEndDateChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleStartTimeChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleEndTimeChange}/>
+                                <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime}
+                                        onClick={this.handleSubmit}>Показать</Button>
+                                <DownloadTableExcel filename="users table" sheet="users"
+                                                    currentTableRef={this.tableRef.current}>
+                                    <Button variant={"outline-success"}
+                                            className={styles.inputDateTime}> Экспорт</Button>
+                                </DownloadTableExcel>
+                            </Form.Group>
+                            <Form.Group className={"d-flex mt-3"}>
+                                <Form.Control type={"search"} placeholder={"Найти по агенту"}
+                                              onChange={this.handleInputChange}/>
+                                <Button variant={"outline-primary"} onClick={this.handleSearch}>Найти</Button>
+                            </Form.Group>
+                        </Card.Body>
+                    </Card>
+                    <div className={"p-3"} style={{width: "1300px"}}>
                         <Table responsive={true} striped bordered hover ref={this.tableRef}>
                             <thead>
                             <tr>

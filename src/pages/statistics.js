@@ -156,18 +156,21 @@ class Statistics extends React.Component {
             <div className={styles.page}>
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
-                    <div className={"w-100 d-flex align-items-center"}>
-                        <Form.Group className={"d-flex"}>
-                            <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                            <Form.Control name={"date"} type={"date"} className={"ms-1"}
-                                   onChange={this.handleEndDateChange}/>
-                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
-                                   onChange={this.handleStartTimeChange}/>
-                            <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
-                                   onChange={this.handleEndTimeChange}/>
-                            <Button variant={"outline-primary"} onClick={this.handleSubmit} className={"ms-2"}>Показать</Button>
-                        </Form.Group>
-                    </div>
+                    <Card className={"w-100 "}>
+                        <Card.Body>
+                            <Form.Group className={"d-flex"}>
+                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control name={"date"} type={"date"} className={"ms-1"}
+                                              onChange={this.handleEndDateChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleStartTimeChange}/>
+                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                              onChange={this.handleEndTimeChange}/>
+                                <Button variant={"outline-primary"} onClick={this.handleSubmit}
+                                        className={"ms-2"}>Показать</Button>
+                            </Form.Group>
+                        </Card.Body>
+                    </Card>
                     <div className={styles.left_right}>
                         <Card className={styles.left}>
                             <Card.Header>Сводная статистика</Card.Header>

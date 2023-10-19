@@ -2,7 +2,7 @@ import React from "react";
 import styles from '../assets/css/addAgent.module.css'
 import Sidebar from "../components/sidebar";
 import axios from "axios";
-import {Button, Form} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
 
 class AddAgent extends React.Component {
     constructor(props) {
@@ -73,28 +73,32 @@ class AddAgent extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"container w-100 d-flex justify-content-center align-items-center"}>
-                    <Form.Group>
-                        <h1> Добавить агента</h1>
-                        <hr/>
-                        <div className={"d-flex flex-column"}>
-                            <Form.Control type={"text"} placeholder={"Логин"} onChange={this.handleLoginChange}/>
-                            <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
-                                   onChange={this.handlePasswordChange}/>
-                            <Form.Control className={"mt-2"} type={"password"} placeholder={"Повторите пароль"}
-                                   onChange={this.handleRepeatPasswordChange}/>
-                        </div>
-                        <br/>
-                        <Button variant={"outline-primary"} onClick={this.add}>Добавить</Button>
-                        {
-                            this.state.text !== "" && (
-                                <div
-                                    className={this.state.text === "User created" ? styles.alert_success : styles.alert_error}>
-                                    {this.state.text}
+                <div className={"w-100 d-flex justify-content-center align-items-center"}>
+                    <Card className={"w-50"}>
+                        <Card.Header>Добавить агента</Card.Header>
+                        <Card.Body>
+                            <Form.Group>
+                                <div className={"d-flex flex-column"}>
+                                    <Form.Control type={"text"} placeholder={"Логин"}
+                                                  onChange={this.handleLoginChange}/>
+                                    <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
+                                                  onChange={this.handlePasswordChange}/>
+                                    <Form.Control className={"mt-2"} type={"password"} placeholder={"Повторите пароль"}
+                                                  onChange={this.handleRepeatPasswordChange}/>
                                 </div>
-                            )
-                        }
-                    </Form.Group>
+                                <br/>
+                                <Button variant={"outline-primary"} onClick={this.add}>Добавить</Button>
+                                {
+                                    this.state.text !== "" && (
+                                        <div
+                                            className={this.state.text === "User created" ? styles.alert_success : styles.alert_error}>
+                                            {this.state.text}
+                                        </div>
+                                    )
+                                }
+                            </Form.Group>
+                        </Card.Body>
+                    </Card>
                 </div>
             </div>
         )

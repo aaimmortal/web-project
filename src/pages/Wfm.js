@@ -6,7 +6,7 @@ import Timeline from 'react-calendar-timeline'
 import moment from "moment";
 import 'react-calendar-timeline/lib/Timeline.css'
 import Select from 'react-select';
-import {Button, Form} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
 
 class Wfm extends React.Component {
     constructor(props) {
@@ -84,19 +84,22 @@ class Wfm extends React.Component {
             <div className={styles.page}>
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
-                    <div className={"w-100 d-flex align-items-center"}>
-                        <Select
-                            options={this.state.options}
-                            isMulti
-                            value={this.selectedOptions}
-                            onChange={this.handleSelectChange}
-                        />
-                        <Form.Group className={"d-flex"}>
-                            <Form.Control name={"date"} className={styles.inputDate} type={"date"}
-                                   onChange={this.handleDateChange}/>
-                            <Button variant={"outline-primary"} className={"ms-1"} onClick={this.handleSubmit}>Показать</Button>
-                        </Form.Group>
-                    </div>
+                    <Card>
+                        <Card.Body className={"w-100 d-flex align-items-center"}>
+                            <Select
+                                options={this.state.options}
+                                isMulti
+                                value={this.selectedOptions}
+                                onChange={this.handleSelectChange}
+                            />
+                            <Form.Group className={"d-flex"}>
+                                <Form.Control name={"date"} className={styles.inputDate} type={"date"}
+                                              onChange={this.handleDateChange}/>
+                                <Button variant={"outline-primary"} className={"ms-1"}
+                                        onClick={this.handleSubmit}>Показать</Button>
+                            </Form.Group>
+                        </Card.Body>
+                    </Card>
                     <div className={"mt-3"}>
                         <Timeline
                             style={{maxWidth: "1200px"}}

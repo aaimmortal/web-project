@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../assets/css/main.module.css"
 import Sidebar from "../components/sidebar.js";
 import axios from "axios";
-import {Button, Form, Modal, Table} from "react-bootstrap";
+import {Button, Card, Form, Modal, Table} from "react-bootstrap";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 
 class Main extends React.Component {
@@ -177,15 +177,15 @@ class Main extends React.Component {
             <div className={styles.page}>
                 <Sidebar/>
                 <div className={"w-100 p-3"}>
-                    <div className={"w-100 d-flex align-items-center"}>
-                        <div className={"w-100 d-flex align-items-center justify-content-between"}>
+                    <Card>
+                        <Card.Body>
                             <Form.Group className={"d-flex"}>
-                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
+                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control type={"date"} className={styles.inputDateTime}
                                               onChange={this.handleEndDateChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleStartTimeChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleEndTimeChange}/>
                                 <Button variant={"outline-primary"} onClick={this.handleSubmit}
                                         className={styles.inputDateTime}>Показать</Button>
@@ -195,20 +195,20 @@ class Main extends React.Component {
                                             className={styles.inputDateTime}> Экспорт</Button>
                                 </DownloadTableExcel>
                             </Form.Group>
-                            <Form.Group className={"d-flex align-items-center"} style={{width: ""}}>
+                            <Form.Group className={"mt-3 d-flex align-items-center"} style={{width: ""}}>
                                 <Form.Select aria-label="Default select example" onChange={this.handleSearchChange}>
                                     <option>Найти по фио</option>
                                     <option>Найти по номеру источника</option>
                                 </Form.Select>
                             </Form.Group>
-                            <Form.Group className={"d-flex"}>
+                            <Form.Group className={"mt-3 d-flex"}>
                                 <Form.Control type={"search"} placeholder={this.state.search}
                                               onChange={this.handleInputChange}/>
                                 <Button variant={"outline-primary"} onClick={this.handleSearchByNumber}>Найти</Button>
                             </Form.Group>
-                        </div>
-                    </div>
-                    <div className={`mt-3`} style={{width: "1300px"}}>
+                        </Card.Body>
+                    </Card>
+                    <div className={`mt-3`}>
                         <Table responsive={true} striped bordered hover>
                             <thead>
                             <tr>

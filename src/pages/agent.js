@@ -124,6 +124,16 @@ class Agent extends React.Component {
     }
 
     componentDidMount() {
+        axios.get("http://172.16.3.185:8088/ari/endpoints", {
+            auth: {
+                username: "myuser",
+                password: "mypassword"
+            }
+        }).then(res => {
+            console.log(res)
+        }).catch(err => {
+            console.log(err)
+        })
         this.props.goto("GOTO", window.location.pathname)
     }
 
@@ -131,7 +141,7 @@ class Agent extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar path={"/agents"}/>
-                <div style={{width:"85%"}} className={"p-3"}>
+                <div style={{width: "85%"}} className={"p-3"}>
                     <Card>
                         <Card.Header>Введите детали</Card.Header>
                         <Card.Body>

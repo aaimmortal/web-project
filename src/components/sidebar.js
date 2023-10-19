@@ -27,6 +27,7 @@ class Sidebar extends React.Component {
     }
     componentDidMount() {
         window.addEventListener('resize', () => this.setState({isOpen: false}))
+
     }
 
     changeIsOpen = () => {

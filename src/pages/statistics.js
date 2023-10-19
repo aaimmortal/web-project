@@ -6,6 +6,8 @@ import 'chart.js/auto';
 import {Pie} from 'react-chartjs-2';
 import {DownloadTableExcel} from 'react-export-table-to-excel'
 import {Button, Card, Form, ListGroup, Table} from "react-bootstrap";
+import {goto, toggle} from "../redux/reducer";
+import {connect} from "react-redux";
 
 class Statistics extends React.Component {
     constructor(props) {
@@ -36,6 +38,24 @@ class Statistics extends React.Component {
                 ]
             }
         }
+    }
+
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
+
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
     }
 
     renderComponents = () => {
@@ -114,6 +134,7 @@ class Statistics extends React.Component {
 
     componentDidMount() {
         this.renderComponents()
+        this.props.goto("GOTO", window.location.pathname)
     }
 
     options = {
@@ -155,16 +176,17 @@ class Statistics extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"w-100 p-3"}>
+                <div style={{width:"85%"}} className={"p-3"}>
                     <Card className={"w-100 "}>
+                        <Card.Header>Введите детали</Card.Header>
                         <Card.Body>
                             <Form.Group className={"d-flex"}>
-                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control name={"date"} type={"date"} className={"ms-1"}
+                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control type={"date"} className={"ms-1"}
                                               onChange={this.handleEndDateChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleStartTimeChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleEndTimeChange}/>
                                 <Button variant={"outline-primary"} onClick={this.handleSubmit}
                                         className={"ms-2"}>Показать</Button>
@@ -250,4 +272,4 @@ class Statistics extends React.Component {
     }
 }
 
-export default Statistics
+export default connect(Statistics.mapStateToProps, Statistics.mapDispatchToProps)(Statistics)

@@ -4,6 +4,8 @@ import Sidebar from "../components/sidebar.js";
 import axios from "axios";
 import {Button, Card, Form, Modal, Table} from "react-bootstrap";
 import {DownloadTableExcel} from "react-export-table-to-excel";
+import {connect} from "react-redux";
+import {goto, toggle} from "../redux/reducer";
 
 class Main extends React.Component {
     constructor(props) {
@@ -29,13 +31,30 @@ class Main extends React.Component {
         }
     }
 
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
 
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
+    }
     componentDidMount() {
         // const token = localStorage.getItem("jwt")
         // console.log(token)
         // if (isExpired(token)) {
         //     window.location.href = "http://localhost:3000/login"
         // }
+        this.props.goto("GOTO", window.location.pathname)
     }
 
     handleStartDateChange = (e) => {
@@ -176,8 +195,9 @@ class Main extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"w-100 p-3"}>
+                <div style={{width:"85%"}} className={"p-3"}>
                     <Card>
+                        <Card.Header>Введите детали</Card.Header>
                         <Card.Body>
                             <Form.Group className={"d-flex"}>
                                 <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
@@ -208,7 +228,7 @@ class Main extends React.Component {
                             </Form.Group>
                         </Card.Body>
                     </Card>
-                    <div className={`mt-3`}>
+                    <div className={`mt-3`} style={{width: "1230px"}}>
                         <Table responsive={true} striped bordered hover>
                             <thead>
                             <tr>
@@ -353,4 +373,4 @@ class Main extends React.Component {
     }
 }
 
-export default Main
+export default connect(Main.mapStateToProps, Main.mapDispatchToProps)(Main)

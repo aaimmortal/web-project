@@ -25,7 +25,6 @@ class Sidebar extends React.Component {
             toggle: (id) => dispatch(toggle(id)),
         };
     }
-
     componentDidMount() {
         window.addEventListener('resize', () => this.setState({isOpen: false}))
     }

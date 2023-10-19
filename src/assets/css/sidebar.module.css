@@ -1,9 +1,8 @@
 .background {
     background-color: #282b2e;
-    width: 200px;
+    width: 15%;
     min-height: 100vh;
     padding: 5px;
-    border-radius: 0 5px 0 5px;
     font-family: sans-serif;
 }
 

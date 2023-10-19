@@ -7,6 +7,8 @@ import moment from "moment";
 import 'react-calendar-timeline/lib/Timeline.css'
 import Select from 'react-select';
 import {Button, Card, Form} from "react-bootstrap";
+import {goto, toggle} from "../redux/reducer";
+import {connect} from "react-redux";
 
 class Wfm extends React.Component {
     constructor(props) {
@@ -24,6 +26,28 @@ class Wfm extends React.Component {
             start: moment().startOf("day").toDate(),
             end: moment().startOf("day").add(1, "day").toDate()
         }
+    }
+
+    componentDidMount() {
+        this.props.goto("GOTO", window.location.pathname)
+    }
+
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
+
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
     }
 
     handleDateChange = (e) => {
@@ -83,8 +107,9 @@ class Wfm extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"w-100 p-3"}>
+                <div style={{width: "85%"}} className={"p-3"}>
                     <Card>
+                        <Card.Header>Введите детали</Card.Header>
                         <Card.Body className={"w-100 d-flex align-items-center"}>
                             <Select
                                 options={this.state.options}
@@ -117,4 +142,4 @@ class Wfm extends React.Component {
     }
 }
 
-export default Wfm
+export default connect(Wfm.mapStateToProps, Wfm.mapDispatchToProps)(Wfm)

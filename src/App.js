@@ -8,11 +8,13 @@ import AddAgent from "./pages/addAgent";
 import {Provider} from "react-redux";
 import store from "./redux/store";
 import React from "react";
+import Topbar from "./components/topbar";
 
 
 function App() {
     return (
         <div>
+            <Topbar/>
             <Provider store={store}>
                 <BrowserRouter>
                     <Routes>
@@ -24,7 +26,6 @@ function App() {
                         <Route path={"/wfm"} element={<Wfm/>}/>
                     </Routes>
                 </BrowserRouter>
-
             </Provider>
         </div>
     );

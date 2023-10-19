@@ -2,6 +2,8 @@ import React from "react";
 import Sidebar from "../components/sidebar";
 import styles from "../assets/css/register.module.css"
 import axios from "axios";
+import {connect} from "react-redux";
+import {goto, toggle} from "../redux/reducer";
 
 class Register extends React.Component {
     constructor(props) {
@@ -12,6 +14,27 @@ class Register extends React.Component {
             repeatPassword: "",
             text: ""
         }
+    }
+    componentDidMount() {
+        this.props.goto("GOTO", window.location.pathname)
+    }
+
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
+
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
     }
 
     handleLoginChange = (e) => {
@@ -98,4 +121,4 @@ class Register extends React.Component {
     }
 }
 
-export default Register
+export default connect(Register.mapStateToProps, Register.mapDispatchToProps)(Register)

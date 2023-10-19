@@ -4,6 +4,8 @@ import styles from '../assets/css/agent.module.css'
 import {Button, Card, Form, Table} from "react-bootstrap";
 import axios from "axios";
 import {DownloadTableExcel} from "react-export-table-to-excel";
+import {goto, toggle} from "../redux/reducer";
+import {connect} from "react-redux";
 
 class Agent extends React.Component {
     constructor(props) {
@@ -21,6 +23,24 @@ class Agent extends React.Component {
                 7002: "Аружан"
             }
         }
+    }
+
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
+
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
     }
 
     getNameByNumber = (number) => {
@@ -104,14 +124,16 @@ class Agent extends React.Component {
     }
 
     componentDidMount() {
+        this.props.goto("GOTO", window.location.pathname)
     }
 
     render() {
         return (
             <div className={styles.page}>
                 <Sidebar path={"/agents"}/>
-                <div className={"w-100 p-3"}>
+                <div style={{width:"85%"}} className={"p-3"}>
                     <Card>
+                        <Card.Header>Введите детали</Card.Header>
                         <Card.Body>
                             <Form.Group className={"d-flex"}>
                                 <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
@@ -166,4 +188,4 @@ class Agent extends React.Component {
     }
 }
 
-export default Agent
+export default connect(Agent.mapStateToProps, Agent.mapDispatchToProps)(Agent)

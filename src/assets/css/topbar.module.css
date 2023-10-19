@@ -1,0 +1,46 @@
+.avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+div h2 {
+    color: white;
+}
+
+.avatar_img {
+    border-radius: 50%;
+    width: 55px;
+}
+
+.camera {
+    opacity: 0;
+    border-radius: 50%;
+    width: 55px;
+    position: absolute;
+    background-color: gray;
+    cursor: pointer;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.camera:hover {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+.changeAvatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: gray;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    padding: 5px;
+    background-color: #282b2e;
+
+}

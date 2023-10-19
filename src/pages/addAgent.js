@@ -3,6 +3,8 @@ import styles from '../assets/css/addAgent.module.css'
 import Sidebar from "../components/sidebar";
 import axios from "axios";
 import {Button, Card, Form} from "react-bootstrap";
+import {connect} from "react-redux";
+import {goto, toggle} from "../redux/reducer";
 
 class AddAgent extends React.Component {
     constructor(props) {
@@ -13,6 +15,27 @@ class AddAgent extends React.Component {
             repeatPassword: "",
             text: ""
         }
+    }
+    componentDidMount() {
+        this.props.goto("GOTO", window.location.pathname)
+    }
+
+    static mapStateToProps(state) {
+        return {
+            menuItems: state.menuItems,
+            current: state.current
+        };
+    }
+
+    static mapDispatchToProps(dispatch) {
+        return {
+            toggle: function (action, id) {
+                dispatch(toggle(action, id))
+            },
+            goto: function (action, path) {
+                dispatch(goto(action, path))
+            }
+        };
     }
 
     handleLoginChange = (e) => {
@@ -73,7 +96,7 @@ class AddAgent extends React.Component {
         return (
             <div className={styles.page}>
                 <Sidebar/>
-                <div className={"w-100 d-flex justify-content-center align-items-center"}>
+                <div style={{width:"80%"}} className={"d-flex justify-content-center align-items-center"}>
                     <Card className={"w-50"}>
                         <Card.Header>Добавить агента</Card.Header>
                         <Card.Body>
@@ -105,4 +128,4 @@ class AddAgent extends React.Component {
     }
 }
 
-export default AddAgent
+export default connect(AddAgent.mapStateToProps, AddAgent.mapDispatchToProps)(AddAgent)

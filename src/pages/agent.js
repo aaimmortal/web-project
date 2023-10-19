@@ -135,23 +135,24 @@ class Agent extends React.Component {
             console.log(err)
         })
         this.props.goto("GOTO", window.location.pathname)
+
     }
 
     render() {
         return (
             <div className={styles.page}>
-                <Sidebar path={"/agents"}/>
+                <Sidebar/>
                 <div style={{width: "85%"}} className={"p-3"}>
                     <Card>
                         <Card.Header>Введите детали</Card.Header>
                         <Card.Body>
                             <Form.Group className={"d-flex"}>
-                                <Form.Control name={"date"} type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control name={"date"} type={"date"} className={styles.inputDateTime}
+                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                <Form.Control type={"date"} className={styles.inputDateTime}
                                               onChange={this.handleEndDateChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleStartTimeChange}/>
-                                <Form.Control name={"date"} type={"time"} className={styles.inputDateTime}
+                                <Form.Control type={"time"} className={styles.inputDateTime}
                                               onChange={this.handleEndTimeChange}/>
                                 <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime}
                                         onClick={this.handleSubmit}>Показать</Button>
@@ -168,7 +169,7 @@ class Agent extends React.Component {
                             </Form.Group>
                         </Card.Body>
                     </Card>
-                    <div className={"p-3"} style={{width: "1300px"}}>
+                    <div className={"p-3"} style={{width: "1250px"}}>
                         <Table responsive={true} striped bordered hover ref={this.tableRef}>
                             <thead>
                             <tr>

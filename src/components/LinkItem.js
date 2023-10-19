@@ -42,7 +42,6 @@ class LinkItem extends React.Component {
                          className={styles.menuItem}>
                     <hr/>
                     <div className={this.state.current === this.state.menuItem.path && styles.activeItem}>
-
                         <div className={"d-flex justify-content-between align-items-center"}>
                             <div className={"d-flex align-items-end"}>
                                 <div className={styles.icon}>{this.state.menuItem.icon}</div>

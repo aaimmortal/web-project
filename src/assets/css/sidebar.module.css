@@ -12,7 +12,7 @@
 
 .activeBack {
     background-color: #282b2e;
-    height: 440px !important;
+    min-height: 600px !important;
     transition: height 0.5s;
 }
 

@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../assets/css/topbar.module.css";
 import {Button, Modal, Form} from "react-bootstrap";
 import axios from "axios";
+import {AiOutlineQuestionCircle, AiOutlineBell, AiOutlineMail, AiOutlineMessage} from 'react-icons/ai'
 
 class Topbar extends React.Component {
     constructor(props) {
@@ -60,8 +61,14 @@ class Topbar extends React.Component {
     render() {
         return (
             <div className={styles.topbar}>
-                <div>
+                <div className={styles.logo}>
                     <h2>Logo</h2>
+                </div>
+                <div className={styles.icons}>
+                    <AiOutlineBell/>
+                    <AiOutlineMail/>
+                    <AiOutlineMessage/>
+                    <AiOutlineQuestionCircle/>
                 </div>
                 <div className={styles.avatar}>
                     <img className={styles.avatar_img} src={this.state.avatar}/>
@@ -79,7 +86,8 @@ class Topbar extends React.Component {
                         <div>
                             <Form.Group controlId="formFile" className="d-flex p-3">
                                 <Form.Control type="file" onChange={this.handleFileChange}/>
-                                <Button className={"ms-1"} onClick={this.upload} variant={"outline-primary"}>Изменить</Button>
+                                <Button className={"ms-1"} onClick={this.upload}
+                                        variant={"outline-primary"}>Изменить</Button>
                             </Form.Group>
                         </div>
                     </Modal.Body>

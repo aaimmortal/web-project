@@ -36,7 +36,7 @@ class Login extends React.Component {
                 console.log(JSON.parse(decodedPayload));
                 localStorage.setItem("jwt", token)
                 localStorage.setItem("user", decodedPayload)
-                window.location.href = `http://172.16.3.185:3000/main`
+                window.location.href = `http://localhost:3000/main`
             } else {
                 this.setState({
                     errorText: "Invalid login or password!"

@@ -6,6 +6,8 @@ import axios from "axios";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 import {goto, toggle} from "../redux/reducer";
 import {connect} from "react-redux";
+import {isExpired} from "react-jwt";
+import Topbar from "../components/topbar";
 
 class Agent extends React.Component {
     constructor(props) {
@@ -124,74 +126,83 @@ class Agent extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("http://172.16.3.185:8088/ari/endpoints", {
-            auth: {
-                username: "myuser",
-                password: "mypassword"
-            }
-        }).then(res => {
-            console.log(res)
-        }).catch(err => {
-            console.log(err)
-        })
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
+        // axios.get("http://172.16.3.185:8088/ari/endpoints", {
+        //     auth: {
+        //         username: "myuser",
+        //         password: "mypassword"
+        //     }
+        // }).then(res => {
+        //     console.log(res)
+        // }).catch(err => {
+        //     console.log(err)
+        // })
+    }
+    componentWillMount() {
         this.props.goto("GOTO", window.location.pathname)
-
     }
 
     render() {
         return (
-            <div className={styles.page}>
-                <Sidebar/>
-                <div style={{width: "85%"}} className={"p-3"}>
-                    <Card>
-                        <Card.Header>Введите детали</Card.Header>
-                        <Card.Body>
-                            <Form.Group className={"d-flex"}>
-                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control type={"date"} className={styles.inputDateTime}
-                                              onChange={this.handleEndDateChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleStartTimeChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleEndTimeChange}/>
-                                <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime}
-                                        onClick={this.handleSubmit}>Показать</Button>
-                                <DownloadTableExcel filename="users table" sheet="users"
-                                                    currentTableRef={this.tableRef.current}>
-                                    <Button variant={"outline-success"}
-                                            className={styles.inputDateTime}> Экспорт</Button>
-                                </DownloadTableExcel>
-                            </Form.Group>
-                            <Form.Group className={"d-flex mt-3"}>
-                                <Form.Control type={"search"} placeholder={"Найти по агенту"}
-                                              onChange={this.handleInputChange}/>
-                                <Button variant={"outline-primary"} onClick={this.handleSearch}>Найти</Button>
-                            </Form.Group>
-                        </Card.Body>
-                    </Card>
-                    <div className={"p-3"} style={{width: "1250px"}}>
-                        <Table responsive={true} striped bordered hover ref={this.tableRef}>
-                            <thead>
-                            <tr>
-                                <th>Агент</th>
-                                <th>Дата</th>
-                                <th>Статус</th>
-                                <th>Время перерыва</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                this.state.data.map(cur => (
-                                    <tr>
-                                        <td>{this.getNameByNumber(cur.agentid)}</td>
-                                        <td>{cur.date.replace('T', " ")}</td>
-                                        <td>{this.getActionByName(cur.action)}</td>
-                                        <td>{cur.pausedDuration}</td>
-                                    </tr>
-                                ))
-                            }
-                            </tbody>
-                        </Table>
+            <div>
+                <Topbar/>
+                <div className={styles.page}>
+                    <Sidebar/>
+                    <div style={{width: "85%"}} className={"p-3"}>
+                        <Card>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body>
+                                <Form.Group className={"d-flex"}>
+                                    <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                    <Form.Control type={"date"} className={styles.inputDateTime}
+                                                  onChange={this.handleEndDateChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleStartTimeChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleEndTimeChange}/>
+                                    <Button type={"button"} variant={"outline-primary"} className={styles.inputDateTime}
+                                            onClick={this.handleSubmit}>Показать</Button>
+                                    <DownloadTableExcel filename="users table" sheet="users"
+                                                        currentTableRef={this.tableRef.current}>
+                                        <Button variant={"outline-success"}
+                                                className={styles.inputDateTime}> Экспорт</Button>
+                                    </DownloadTableExcel>
+                                </Form.Group>
+                                <Form.Group className={"d-flex mt-3"}>
+                                    <Form.Control type={"search"} placeholder={"Найти по агенту"}
+                                                  onChange={this.handleInputChange}/>
+                                    <Button variant={"outline-primary"} onClick={this.handleSearch}>Найти</Button>
+                                </Form.Group>
+                            </Card.Body>
+                        </Card>
+                        <div className={"p-3"} style={{width: "1250px"}}>
+                            <Table responsive={true} striped bordered hover ref={this.tableRef}>
+                                <thead>
+                                <tr>
+                                    <th>Агент</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th>Время перерыва</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    this.state.data.map(cur => (
+                                        <tr>
+                                            <td>{this.getNameByNumber(cur.agentid)}</td>
+                                            <td>{cur.date.replace('T', " ")}</td>
+                                            <td>{this.getActionByName(cur.action)}</td>
+                                            <td>{cur.pausedDuration}</td>
+                                        </tr>
+                                    ))
+                                }
+                                </tbody>
+                            </Table>
+                        </div>
                     </div>
                 </div>
             </div>

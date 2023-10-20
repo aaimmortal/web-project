@@ -9,6 +9,8 @@ import Select from 'react-select';
 import {Button, Card, Form} from "react-bootstrap";
 import {goto, toggle} from "../redux/reducer";
 import {connect} from "react-redux";
+import {isExpired} from "react-jwt";
+import Topbar from "../components/topbar";
 
 class Wfm extends React.Component {
     constructor(props) {
@@ -29,6 +31,13 @@ class Wfm extends React.Component {
     }
 
     componentDidMount() {
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
+    }
+    componentWillMount() {
         this.props.goto("GOTO", window.location.pathname)
     }
 
@@ -105,36 +114,39 @@ class Wfm extends React.Component {
 
     render() {
         return (
-            <div className={styles.page}>
-                <Sidebar/>
-                <div style={{width: "85%"}} className={"p-3"}>
-                    <Card>
-                        <Card.Header>Введите детали</Card.Header>
-                        <Card.Body className={"w-100 d-flex align-items-center"}>
-                            <Select
-                                options={this.state.options}
-                                isMulti
-                                value={this.selectedOptions}
-                                onChange={this.handleSelectChange}
+            <div>
+                <Topbar/>
+                <div className={styles.page}>
+                    <Sidebar/>
+                    <div style={{width: "85%"}} className={"p-3"}>
+                        <Card>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body className={"w-100 d-flex align-items-center"}>
+                                <Select
+                                    options={this.state.options}
+                                    isMulti
+                                    value={this.selectedOptions}
+                                    onChange={this.handleSelectChange}
+                                />
+                                <Form.Group className={"d-flex"}>
+                                    <Form.Control name={"date"} className={styles.inputDate} type={"date"}
+                                                  onChange={this.handleDateChange}/>
+                                    <Button variant={"outline-primary"} className={"ms-1"}
+                                            onClick={this.handleSubmit}>Показать</Button>
+                                </Form.Group>
+                            </Card.Body>
+                        </Card>
+                        <div className={"mt-3"}>
+                            <Timeline
+                                style={{maxWidth: "1200px"}}
+                                groups={this.state.groups}
+                                items={this.state.items}
+                                canMove={false}
+                                canResize={false}
+                                defaultTimeStart={this.state.start}
+                                defaultTimeEnd={this.state.end}
                             />
-                            <Form.Group className={"d-flex"}>
-                                <Form.Control name={"date"} className={styles.inputDate} type={"date"}
-                                              onChange={this.handleDateChange}/>
-                                <Button variant={"outline-primary"} className={"ms-1"}
-                                        onClick={this.handleSubmit}>Показать</Button>
-                            </Form.Group>
-                        </Card.Body>
-                    </Card>
-                    <div className={"mt-3"}>
-                        <Timeline
-                            style={{maxWidth: "1200px"}}
-                            groups={this.state.groups}
-                            items={this.state.items}
-                            canMove={false}
-                            canResize={false}
-                            defaultTimeStart={this.state.start}
-                            defaultTimeEnd={this.state.end}
-                        />
+                        </div>
                     </div>
                 </div>
             </div>

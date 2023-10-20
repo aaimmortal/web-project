@@ -6,6 +6,8 @@ import {Button, Card, Form, Modal, Table} from "react-bootstrap";
 import {DownloadTableExcel} from "react-export-table-to-excel";
 import {connect} from "react-redux";
 import {goto, toggle} from "../redux/reducer";
+import {isExpired} from "react-jwt";
+import Topbar from "../components/topbar";
 
 class Main extends React.Component {
     constructor(props) {
@@ -48,12 +50,15 @@ class Main extends React.Component {
             }
         };
     }
+
     componentDidMount() {
-        // const token = localStorage.getItem("jwt")
-        // console.log(token)
-        // if (isExpired(token)) {
-        //     window.location.href = "http://localhost:3000/login"
-        // }
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
+    }
+    componentWillMount() {
         this.props.goto("GOTO", window.location.pathname)
     }
 
@@ -193,181 +198,185 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div className={styles.page}>
-                <Sidebar/>
-                <div style={{width:"85%"}} className={"p-3"}>
-                    <Card>
-                        <Card.Header>Введите детали</Card.Header>
-                        <Card.Body>
-                            <Form.Group className={"d-flex"}>
-                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control type={"date"} className={styles.inputDateTime}
-                                              onChange={this.handleEndDateChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleStartTimeChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleEndTimeChange}/>
-                                <Button variant={"outline-primary"} onClick={this.handleSubmit}
-                                        className={styles.inputDateTime}>Показать</Button>
-                                <DownloadTableExcel filename="users table" sheet="users"
-                                                    currentTableRef={this.tableRef.current}>
-                                    <Button variant={"outline-success"}
-                                            className={styles.inputDateTime}> Экспорт</Button>
-                                </DownloadTableExcel>
-                            </Form.Group>
-                            <Form.Group className={"mt-3 d-flex align-items-center"} style={{width: ""}}>
-                                <Form.Select aria-label="Default select example" onChange={this.handleSearchChange}>
-                                    <option>Найти по фио</option>
-                                    <option>Найти по номеру источника</option>
-                                </Form.Select>
-                            </Form.Group>
-                            <Form.Group className={"mt-3 d-flex"}>
-                                <Form.Control type={"search"} placeholder={this.state.search}
-                                              onChange={this.handleInputChange}/>
-                                <Button variant={"outline-primary"} onClick={this.handleSearchByNumber}>Найти</Button>
-                            </Form.Group>
-                        </Card.Body>
-                    </Card>
-                    <div className={`mt-3`} style={{width: "1230px"}}>
-                        <Table responsive={true} striped bordered hover>
-                            <thead>
-                            <tr>
-                                <th scope="col">Дата</th>
-                                <th scope="col">Источник</th>
-                                <th scope="col">Язык</th>
-                                <th scope="col">ФИО</th>
-                                <th scope="col">Статус</th>
-                                <th scope="col">Продолжительность</th>
-                                <th scope="col">Ожидание</th>
-                                <th scope="col">Перенап</th>
-                                <th scope="col">Подключился</th>
-                                <th scope="col">Отключился</th>
-                                <th scope="col">Разговор</th>
-                                <th scope="col">Оценка</th>
-                                <th scope="col">Сбросил</th>
-                                <th scope="col">Скачать</th>
-                                <th scope="col">Аудио</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                this.state.res.map(cur => (
-                                    <tr>
-                                        <td>{cur.calldate.replace('T', " ")}</td>
-                                        <td>{cur.src}</td>
-                                        <td>{cur.language}</td>
-                                        <td>{this.state.agents[cur.dst]}</td>
-                                        <td>{this.getDispositionInRussian(cur.disposition)}</td>
-                                        <td>{this.formatTime(cur.duration)}</td>
-                                        <td>{this.formatTime(cur.waiting)}</td>
-                                        <td>
-                                            <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
-                                                историю
-                                            </button>
-                                        </td>
-                                        <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
-                                        <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
-                                        <td>{this.formatTime(cur.durationConsult)}</td>
-                                        <td>{cur.rating}</td>
-                                        <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
-                                        <td>
-                                            {
-                                                (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
-                                                    <button
-                                                        onClick={() => this.handleDownload(cur.uniqueid)}>Скачать
-                                                    </button>
-                                            }
-                                        </td>
-                                        <td>
-                                            {
-                                                (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
-                                                    <div className={"d-flex"}>
-                                                        <button
-                                                            onClick={() => this.setAudioSrc(cur.uniqueid)}>Прослушать
-                                                        </button>
-                                                        <audio id={cur.uniqueid} controls type="audio/wav"/>
-                                                    </div>
-                                            }
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                            </tbody>
-                        </Table>
-                    </div>
-                </div>
-                <Modal show={this.state.show}>
-                    <Modal.Header>
-                        <Modal.Title>
-                            История звонка
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className={"w-100 table-responsive"}>
-                            <Table className={"w-100 table"}>
+            <div>
+                <Topbar/>
+                <div className={styles.page}>
+                    <Sidebar/>
+                    <div style={{width: "85%"}} className={"p-3"}>
+                        <Card>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body>
+                                <Form.Group className={"d-flex"}>
+                                    <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                    <Form.Control type={"date"} className={styles.inputDateTime}
+                                                  onChange={this.handleEndDateChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleStartTimeChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleEndTimeChange}/>
+                                    <Button variant={"outline-primary"} onClick={this.handleSubmit}
+                                            className={styles.inputDateTime}>Показать</Button>
+                                    <DownloadTableExcel filename="users table" sheet="users"
+                                                        currentTableRef={this.tableRef.current}>
+                                        <Button variant={"outline-success"}
+                                                className={styles.inputDateTime}> Экспорт</Button>
+                                    </DownloadTableExcel>
+                                </Form.Group>
+                                <Form.Group className={"mt-3 d-flex align-items-center"} style={{width: ""}}>
+                                    <Form.Select aria-label="Default select example" onChange={this.handleSearchChange}>
+                                        <option>Найти по фио</option>
+                                        <option>Найти по номеру источника</option>
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className={"mt-3 d-flex"}>
+                                    <Form.Control type={"search"} placeholder={this.state.search}
+                                                  onChange={this.handleInputChange}/>
+                                    <Button variant={"outline-primary"}
+                                            onClick={this.handleSearchByNumber}>Найти</Button>
+                                </Form.Group>
+                            </Card.Body>
+                        </Card>
+                        <div className={`mt-3`} style={{width: "1230px"}}>
+                            <Table responsive={true} striped bordered hover>
                                 <thead>
                                 <tr>
-                                    <th scope="col">Агент</th>
-                                    <th scope="col">Ответ</th>
+                                    <th scope="col">Дата</th>
+                                    <th scope="col">Источник</th>
+                                    <th scope="col">Язык</th>
+                                    <th scope="col">ФИО</th>
+                                    <th scope="col">Статус</th>
+                                    <th scope="col">Продолжительность</th>
+                                    <th scope="col">Ожидание</th>
+                                    <th scope="col">Перенап</th>
+                                    <th scope="col">Подключился</th>
+                                    <th scope="col">Отключился</th>
+                                    <th scope="col">Разговор</th>
+                                    <th scope="col">Оценка</th>
+                                    <th scope="col">Сбросил</th>
+                                    <th scope="col">Скачать</th>
+                                    <th scope="col">Аудио</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {
-                                    this.state.agentCallData.map(cur => (
+                                    this.state.res.map(cur => (
                                         <tr>
-                                            <td>{this.getAgentById(cur.agentid)}</td>
+                                            <td>{cur.calldate.replace('T', " ")}</td>
+                                            <td>{cur.src}</td>
+                                            <td>{cur.language}</td>
+                                            <td>{this.state.agents[cur.dst]}</td>
                                             <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                            <td>{this.formatTime(cur.duration)}</td>
+                                            <td>{this.formatTime(cur.waiting)}</td>
+                                            <td>
+                                                <button onClick={() => this.openAgentCallData(cur.uniqueid)}>Показать
+                                                    историю
+                                                </button>
+                                            </td>
+                                            <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
+                                            <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
+                                            <td>{this.formatTime(cur.durationConsult)}</td>
+                                            <td>{cur.rating}</td>
+                                            <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
+                                            <td>
+                                                {
+                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                        <button
+                                                            onClick={() => this.handleDownload(cur.uniqueid)}>Скачать
+                                                        </button>
+                                                }
+                                            </td>
+                                            <td>
+                                                {
+                                                    (cur.disposition === "CANCEL" || cur.disposition === "NO ANSWER") ? "Не состоялся" :
+                                                        <div className={"d-flex"}>
+                                                            <button
+                                                                onClick={() => this.setAudioSrc(cur.uniqueid)}>Прослушать
+                                                            </button>
+                                                            <audio id={cur.uniqueid} controls type="audio/wav"/>
+                                                        </div>
+                                                }
+                                            </td>
                                         </tr>
                                     ))
                                 }
                                 </tbody>
                             </Table>
                         </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => this.setState({show: false})}>
-                            Закрыть
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-                <Table className={styles.hiddenTable} ref={this.tableRef}>
-                    <thead>
-                    <tr>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Источник</th>
-                        <th scope="col">Язык</th>
-                        <th scope="col">ФИО</th>
-                        <th scope="col">Статус</th>
-                        <th scope="col">Продолжительность</th>
-                        <th scope="col">Ожидание</th>
-                        <th scope="col">Подключился</th>
-                        <th scope="col">Отключился</th>
-                        <th scope="col">Разговор</th>
-                        <th scope="col">Оценка</th>
-                        <th scope="col">Сбросил</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        this.state.res.map(cur => (
-                            <tr>
-                                <td>{cur.calldate.replace('T', " ")}</td>
-                                <td>{cur.src}</td>
-                                <td>{cur.language}</td>
-                                <td>{this.state.agents[cur.dst]}</td>
-                                <td>{this.getDispositionInRussian(cur.disposition)}</td>
-                                <td>{this.formatTime(cur.duration)}</td>
-                                <td>{this.formatTime(cur.waiting)}</td>
-                                <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
-                                <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
-                                <td>{this.formatTime(cur.durationConsult)}</td>
-                                <td>{cur.rating}</td>
-                                <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
-                            </tr>
-                        ))
-                    }
-                    </tbody>
-                </Table>
+                    </div>
+                    <Modal show={this.state.show}>
+                        <Modal.Header>
+                            <Modal.Title>
+                                История звонка
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className={"w-100 table-responsive"}>
+                                <Table className={"w-100 table"}>
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Агент</th>
+                                        <th scope="col">Ответ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        this.state.agentCallData.map(cur => (
+                                            <tr>
+                                                <td>{this.getAgentById(cur.agentid)}</td>
+                                                <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                    </tbody>
+                                </Table>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => this.setState({show: false})}>
+                                Закрыть
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Table className={styles.hiddenTable} ref={this.tableRef}>
+                        <thead>
+                        <tr>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Источник</th>
+                            <th scope="col">Язык</th>
+                            <th scope="col">ФИО</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Продолжительность</th>
+                            <th scope="col">Ожидание</th>
+                            <th scope="col">Подключился</th>
+                            <th scope="col">Отключился</th>
+                            <th scope="col">Разговор</th>
+                            <th scope="col">Оценка</th>
+                            <th scope="col">Сбросил</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            this.state.res.map(cur => (
+                                <tr>
+                                    <td>{cur.calldate.replace('T', " ")}</td>
+                                    <td>{cur.src}</td>
+                                    <td>{cur.language}</td>
+                                    <td>{this.state.agents[cur.dst]}</td>
+                                    <td>{this.getDispositionInRussian(cur.disposition)}</td>
+                                    <td>{this.formatTime(cur.duration)}</td>
+                                    <td>{this.formatTime(cur.waiting)}</td>
+                                    <td>{cur.connect != null && cur.connect.replace('T', " ")}</td>
+                                    <td>{cur.disconnect != null && cur.disconnect.replace('T', " ")}</td>
+                                    <td>{this.formatTime(cur.durationConsult)}</td>
+                                    <td>{cur.rating}</td>
+                                    <td>{cur.dropped === 1 ? "Агент" : "Пользователь"}</td>
+                                </tr>
+                            ))
+                        }
+                        </tbody>
+                    </Table>
+                </div>
             </div>
         )
     }

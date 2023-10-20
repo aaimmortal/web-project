@@ -14,7 +14,6 @@ import Topbar from "./components/topbar";
 function App() {
     return (
         <div>
-            <Topbar/>
             <Provider store={store}>
                 <BrowserRouter>
                     <Routes>

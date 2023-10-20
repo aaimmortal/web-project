@@ -11,7 +11,7 @@
 }
 
 .activeBack {
-    background-color: black;
+    background-color: #282b2e;
     height: 440px !important;
     transition: height 0.5s;
 }
@@ -54,6 +54,12 @@
 .activeItem {
     background-color: white;
     color: #333333;
+    padding: 5px;
+    border-radius: 5px;
+}
+.NotActiveItem {
+    background-color: #333333;
+    color: white;
     padding: 5px;
     border-radius: 5px;
 }

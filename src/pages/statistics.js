@@ -8,6 +8,8 @@ import {DownloadTableExcel} from 'react-export-table-to-excel'
 import {Button, Card, Form, ListGroup, Table} from "react-bootstrap";
 import {goto, toggle} from "../redux/reducer";
 import {connect} from "react-redux";
+import {isExpired} from "react-jwt";
+import Topbar from "../components/topbar";
 
 class Statistics extends React.Component {
     constructor(props) {
@@ -133,7 +135,14 @@ class Statistics extends React.Component {
     }
 
     componentDidMount() {
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
         this.renderComponents()
+    }
+    componentWillMount() {
         this.props.goto("GOTO", window.location.pathname)
     }
 
@@ -174,97 +183,102 @@ class Statistics extends React.Component {
 
     render() {
         return (
-            <div className={styles.page}>
-                <Sidebar/>
-                <div style={{width:"85%"}} className={"p-3"}>
-                    <Card className={"w-100 "}>
-                        <Card.Header>Введите детали</Card.Header>
-                        <Card.Body>
-                            <Form.Group className={"d-flex"}>
-                                <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
-                                <Form.Control type={"date"} className={"ms-1"}
-                                              onChange={this.handleEndDateChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleStartTimeChange}/>
-                                <Form.Control type={"time"} className={styles.inputDateTime}
-                                              onChange={this.handleEndTimeChange}/>
-                                <Button variant={"outline-primary"} onClick={this.handleSubmit}
-                                        className={"ms-2"}>Показать</Button>
-                            </Form.Group>
-                        </Card.Body>
-                    </Card>
-                    <div className={styles.left_right}>
-                        <Card className={styles.left}>
-                            <Card.Header>Сводная статистика</Card.Header>
-                            <ListGroup variant="flush">
-                                <ListGroup.Item className={styles.left_item}>Всего
-                                    звонков {this.state.all}</ListGroup.Item>
-                                <ListGroup.Item
-                                    className={`${styles.left_item} ${styles.desc} ${styles.answered}`}>Принятые {this.state.answered}</ListGroup.Item>
-                                <ListGroup.Item
-                                    className={`${styles.left_item} ${styles.desc} ${styles.canceled}`}>Потерянные {this.state.canceled}</ListGroup.Item>
-                                <ListGroup.Item className={`${styles.left_item} ${styles.desc} ${styles.noAnswer}`}>Принятые
-                                    несвоевременно {this.state.noAnswer}</ListGroup.Item>
-                                <ListGroup.Item className={styles.left_item}>Средняя
-                                    оценка: {this.state.avgRating.toFixed(2)}</ListGroup.Item>
-                                <ListGroup.Item className={styles.left_item}>Среднее время
-                                    ожидания: {this.state.avgWaiting.toFixed(2)} сек.</ListGroup.Item>
-                                <ListGroup.Item className={styles.left_item}>Среднее время
-                                    консультаций: {this.state.avgDurationConsult.toFixed(2)} сек.</ListGroup.Item>
-                                <ListGroup.Item className={styles.left_item}>Казахский: {this.state.kz}</ListGroup.Item>
-                                <ListGroup.Item className={styles.left_item}>Русский: {this.state.ru}</ListGroup.Item>
-                            </ListGroup>
+            <div>
+                <Topbar/>
+                <div className={styles.page}>
+                    <Sidebar/>
+                    <div style={{width: "85%"}} className={"p-3"}>
+                        <Card className={"w-100 "}>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body>
+                                <Form.Group className={"d-flex"}>
+                                    <Form.Control type={"date"} onChange={this.handleStartDateChange}/>
+                                    <Form.Control type={"date"} className={"ms-1"}
+                                                  onChange={this.handleEndDateChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleStartTimeChange}/>
+                                    <Form.Control type={"time"} className={styles.inputDateTime}
+                                                  onChange={this.handleEndTimeChange}/>
+                                    <Button variant={"outline-primary"} onClick={this.handleSubmit}
+                                            className={"ms-2"}>Показать</Button>
+                                </Form.Group>
+                            </Card.Body>
                         </Card>
-                        <Card className={styles.right}>
-                            <Pie data={this.state.data} options={this.options}/>
-                        </Card>
-                    </div>
-                    <div className={"w-100 table-responsive mt-5"}>
-                        <Table responsive={true} striped bordered hover ref={this.tableRef}>
-                            <thead>
-                            <tr>
-                                <th>Агент</th>
-                                <th>Принятые</th>
-                                <th>Потерянные</th>
-                                <th>Принятые несвоевременно</th>
-                                <th>Все принятые</th>
-                                <th>Все потерянные</th>
-                                <th>Все принятые несвоевременно</th>
-                                <th>Ср. оценка</th>
-                                <th>Ср. время ож.</th>
-                                <th>Ср. время конс.</th>
-                                <th>Каз</th>
-                                <th>Рус</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                Object.entries(this.state.dispositionCountByAccount).map(([key, value]) => (
-                                    <tr>
-                                        <td>{this.getNameByNumber(key)}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWER') ? value.ANSWER : 0}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('CANCEL') ? value.CANCEL : 0}</td>
-                                        <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('NOANSWER') ? value.NOANSWER : 0}</td>
-                                        <td>{this.state.answered}</td>
-                                        <td>{this.state.canceled}</td>
-                                        <td>{this.state.noAnswer}</td>
-                                        <td>{this.state.avgRating.toFixed(2)}</td>
-                                        <td>{this.state.avgWaiting.toFixed(2)}</td>
-                                        <td>{this.state.avgDurationConsult.toFixed(2)}</td>
-                                        <td>{this.state.kz}</td>
-                                        <td>{this.state.ru}</td>
-                                    </tr>
-                                ))
-                            }
-                            </tbody>
-                        </Table>
-                        <DownloadTableExcel
-                            filename="users table"
-                            sheet="users"
-                            currentTableRef={this.tableRef.current}
-                        >
-                            <Button variant={"outline-success"}> Export excel</Button>
-                        </DownloadTableExcel>
+                        <div className={styles.left_right}>
+                            <Card className={styles.left}>
+                                <Card.Header>Сводная статистика</Card.Header>
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item className={styles.left_item}>Всего
+                                        звонков {this.state.all}</ListGroup.Item>
+                                    <ListGroup.Item
+                                        className={`${styles.left_item} ${styles.desc} ${styles.answered}`}>Принятые {this.state.answered}</ListGroup.Item>
+                                    <ListGroup.Item
+                                        className={`${styles.left_item} ${styles.desc} ${styles.canceled}`}>Потерянные {this.state.canceled}</ListGroup.Item>
+                                    <ListGroup.Item className={`${styles.left_item} ${styles.desc} ${styles.noAnswer}`}>Принятые
+                                        несвоевременно {this.state.noAnswer}</ListGroup.Item>
+                                    <ListGroup.Item className={styles.left_item}>Средняя
+                                        оценка: {this.state.avgRating.toFixed(2)}</ListGroup.Item>
+                                    <ListGroup.Item className={styles.left_item}>Среднее время
+                                        ожидания: {this.state.avgWaiting.toFixed(2)} сек.</ListGroup.Item>
+                                    <ListGroup.Item className={styles.left_item}>Среднее время
+                                        консультаций: {this.state.avgDurationConsult.toFixed(2)} сек.</ListGroup.Item>
+                                    <ListGroup.Item
+                                        className={styles.left_item}>Казахский: {this.state.kz}</ListGroup.Item>
+                                    <ListGroup.Item
+                                        className={styles.left_item}>Русский: {this.state.ru}</ListGroup.Item>
+                                </ListGroup>
+                            </Card>
+                            <Card className={styles.right}>
+                                <Pie data={this.state.data} options={this.options}/>
+                            </Card>
+                        </div>
+                        <div className={"w-100 table-responsive mt-5"}>
+                            <Table responsive={true} striped bordered hover ref={this.tableRef}>
+                                <thead>
+                                <tr>
+                                    <th>Агент</th>
+                                    <th>Принятые</th>
+                                    <th>Потерянные</th>
+                                    <th>Принятые несвоевременно</th>
+                                    <th>Все принятые</th>
+                                    <th>Все потерянные</th>
+                                    <th>Все принятые несвоевременно</th>
+                                    <th>Ср. оценка</th>
+                                    <th>Ср. время ож.</th>
+                                    <th>Ср. время конс.</th>
+                                    <th>Каз</th>
+                                    <th>Рус</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    Object.entries(this.state.dispositionCountByAccount).map(([key, value]) => (
+                                        <tr>
+                                            <td>{this.getNameByNumber(key)}</td>
+                                            <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('ANSWER') ? value.ANSWER : 0}</td>
+                                            <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('CANCEL') ? value.CANCEL : 0}</td>
+                                            <td>{this.state.dispositionCountByAccount[key].hasOwnProperty('NOANSWER') ? value.NOANSWER : 0}</td>
+                                            <td>{this.state.answered}</td>
+                                            <td>{this.state.canceled}</td>
+                                            <td>{this.state.noAnswer}</td>
+                                            <td>{this.state.avgRating.toFixed(2)}</td>
+                                            <td>{this.state.avgWaiting.toFixed(2)}</td>
+                                            <td>{this.state.avgDurationConsult.toFixed(2)}</td>
+                                            <td>{this.state.kz}</td>
+                                            <td>{this.state.ru}</td>
+                                        </tr>
+                                    ))
+                                }
+                                </tbody>
+                            </Table>
+                            <DownloadTableExcel
+                                filename="users table"
+                                sheet="users"
+                                currentTableRef={this.tableRef.current}
+                            >
+                                <Button variant={"outline-success"}> Export excel</Button>
+                            </DownloadTableExcel>
+                        </div>
                     </div>
                 </div>
             </div>

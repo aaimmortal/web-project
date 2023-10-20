@@ -86,6 +86,7 @@ const handleToggle = function (state, id) {
         return menuItem
     })
     return {
+        ...state,
         menuItems: updated,
         current: state.current
     }
@@ -96,18 +97,19 @@ const handleGoTo = function (state, path) {
         current: path
     })
     return {
-        menuItems: state.menuItems,
+        ...state,
+        menuItems: [...state.menuItems],
         current: path
     }
 }
 const counterReducer = function (state = initialState, action) {
     switch (action.type) {
         case 'TOGGLE':
-            return handleToggle(state, action.id)
+            return handleToggle({...state}, action.id)
         case 'GOTO':
-            return handleGoTo(state, action.path)
+            return handleGoTo({...state}, action.path)
         default:
-            return state;
+            return {...state};
     }
 };
 

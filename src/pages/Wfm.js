@@ -25,8 +25,12 @@ class Wfm extends React.Component {
                 {label: '7001', value: '7001'},
                 {label: '7002', value: '7002'},
             ],
+            key: true,
+            show: false,
             start: moment().startOf("day").toDate(),
-            end: moment().startOf("day").add(1, "day").toDate()
+            end: moment().startOf("day").add(1, "day").toDate(),
+            time1: "",
+            time2: ""
         }
     }
 
@@ -37,7 +41,13 @@ class Wfm extends React.Component {
             window.location.href = "http://localhost:3000/"
         }
     }
+
     componentWillMount() {
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
         this.props.goto("GOTO", window.location.pathname)
     }
 
@@ -66,9 +76,8 @@ class Wfm extends React.Component {
     }
 
     handleSubmit = () => {
-        axios.get("http://172.16.3.185:8080/api/agents").then(res => {
-            console.log(res.data)
-        })
+        const time1 = this.state.time1 === "" ? "00:00:00" : `${this.state.time1}:00`
+        const time2 = this.state.time2 === "" ? "23:59:59" : `${this.state.time2}:59`
         const agents = this.state.selectedOptions.map(cur => cur.value).join(" ")
         axios.get("http://172.16.3.185:8080/api/wfmGraph", {
             params: {
@@ -93,7 +102,8 @@ class Wfm extends React.Component {
                         itemProps: {
                             style: {
                                 background: (temp[i][j].action === "Login" || temp[i][j].action === "UNPAUSED") ? 'green' : 'red'
-                            }
+                            },
+                            className: '',
                         }
                     })
                 }
@@ -101,9 +111,12 @@ class Wfm extends React.Component {
             this.setState({
                 items: items,
                 groups: groups,
-                start: moment(this.state.date),
-                end: moment(this.state.date).add(1, "day").toDate()
+                start: moment(this.state.date + " " + time1),
+                end: moment(this.state.date + " " + time2),
+                show: true,
+                key: !this.state.key
             })
+            console.log(moment(this.state.date))
         })
     }
     handleSelectChange = (selected) => {
@@ -111,6 +124,19 @@ class Wfm extends React.Component {
             selectedOptions: selected
         });
     };
+    handleStartTimeChange = (e) => {
+        this.setState({
+            time1: e.target.value
+        })
+    }
+    handleEndTimeChange = (e) => {
+        this.setState({
+            time2: e.target.value
+        })
+    }
+    handleWeekChange = (e) => {
+        console.log(e.target.value)
+    }
 
     render() {
         return (
@@ -129,23 +155,32 @@ class Wfm extends React.Component {
                                     onChange={this.handleSelectChange}
                                 />
                                 <Form.Group className={"d-flex"}>
-                                    <Form.Control name={"date"} className={styles.inputDate} type={"date"}
+                                    <Form.Control className={styles.inputDate} type={"date"}
                                                   onChange={this.handleDateChange}/>
+                                    <Form.Control className={styles.inputDate} type={"time"}
+                                                  onChange={this.handleStartTimeChange}/>
+                                    <Form.Control className={styles.inputDate} type={"time"}
+                                                  onChange={this.handleEndTimeChange}/>
+                                    <Form.Control className={styles.inputDate} type={"week"}
+                                                  onChange={this.handleWeekChange}/>
                                     <Button variant={"outline-primary"} className={"ms-1"}
                                             onClick={this.handleSubmit}>Показать</Button>
                                 </Form.Group>
                             </Card.Body>
                         </Card>
                         <div className={"mt-3"}>
-                            <Timeline
-                                style={{maxWidth: "1200px"}}
-                                groups={this.state.groups}
-                                items={this.state.items}
-                                canMove={false}
-                                canResize={false}
-                                defaultTimeStart={this.state.start}
-                                defaultTimeEnd={this.state.end}
-                            />
+                            {
+                                this.state.show && <Timeline
+                                    key={this.state.key}
+                                    style={{maxWidth: "1260px"}}
+                                    groups={this.state.groups}
+                                    items={this.state.items}
+                                    canMove={false}
+                                    canResize={false}
+                                    defaultTimeStart={this.state.start}
+                                    defaultTimeEnd={this.state.end}
+                                />
+                            }
                         </div>
                     </div>
                 </div>

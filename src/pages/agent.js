@@ -131,18 +131,30 @@ class Agent extends React.Component {
         if (isExpired(token)) {
             window.location.href = "http://localhost:3000/"
         }
-        // axios.get("http://172.16.3.185:8088/ari/endpoints", {
-        //     auth: {
-        //         username: "myuser",
-        //         password: "mypassword"
-        //     }
-        // }).then(res => {
-        //     console.log(res)
-        // }).catch(err => {
-        //     console.log(err)
-        // })
+
+        axios.get("http://172.16.3.185:8088/ari/endpoints",
+            {
+                auth: {
+                    username: 'myuser',
+                    password: 'mypassword'
+                },
+                headers: {
+                    "Authorization":"Basic bXl1c2VyOm15cGFzc3dvcmQ="
+                },
+                'Access-Control-Allow-Credentials':true
+            }).then(res => {
+            console.log(res)
+        }).catch(err => {
+            console.log(err)
+        })
     }
+
     componentWillMount() {
+        const token = localStorage.getItem("jwt")
+        console.log(token)
+        if (isExpired(token)) {
+            window.location.href = "http://localhost:3000/"
+        }
         this.props.goto("GOTO", window.location.pathname)
     }
 

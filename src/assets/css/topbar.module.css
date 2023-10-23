@@ -42,7 +42,9 @@ div h2 {
     width: 14%;
 }
 .logo {
-    width: 82%;
+    width: 50%;
+    display: flex;
+    align-items: center;
 }
 .topbar {
     display: flex;
@@ -51,6 +53,18 @@ div h2 {
     height: 65px;
     padding: 5px;
     background-color: #1d1f21;
+}
+.info {
+    display: flex;
+    align-items: center;
+    color: white;
+    width: 35%;
+}
+.info1 {
+    margin-left: 30px;
+}
+.icon {
+    cursor: pointer;
 }
 @media screen and (max-width: 520px) {
     .topbar {

@@ -20,13 +20,13 @@ class AddAgent extends React.Component {
     }
 
     componentDidMount() {
+    }
+    componentWillMount() {
         const token = localStorage.getItem("jwt")
         console.log(token)
         if (isExpired(token)) {
             window.location.href = "http://localhost:3000/"
         }
-    }
-    componentWillMount() {
         this.props.goto("GOTO", window.location.pathname)
     }
 

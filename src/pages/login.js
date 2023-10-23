@@ -1,7 +1,7 @@
 import React from "react";
 import styles from '../assets/css/login.module.css'
 import axios from "axios";
-import {Button, Form} from "react-bootstrap";
+import {Button, Card, Form} from "react-bootstrap";
 
 class Login extends React.Component {
     constructor(props) {
@@ -53,29 +53,31 @@ class Login extends React.Component {
     render() {
         return (
             <div className={styles.page}>
-                <div>
-                    <div className={styles.banner}>
-                        <p>Мониторинг записей телефонных звонков </p>
-                    </div>
-                    <div className={"w-100 h-50 d-flex justify-content-center align-items-center"}>
-                        <Form.Floating>
-                            <h5> Введите имя пользователя и пароль</h5>
-                            <hr/>
-                            <div className={"d-flex flex-column"}>
-                                <Form.Control type={"text"} placeholder={"Логин"} onChange={this.handleLoginChange}/>
-                                <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
-                                       onChange={this.handlePasswordChange}/>
-                            </div>
-                            <Button variant={"outline-primary"} className={"mt-3"} onClick={this.login}>Подключиться</Button>
-                            {
-                                this.state.errorText !== "" && (
-                                    <div className={styles.alert_error}>
-                                        {this.state.errorText}
-                                    </div>
-                                )
-                            }
-                        </Form.Floating>
-                    </div>
+                <div className={"w-100 h-100 d-flex justify-content-center align-items-center"}>
+                    <Card>
+                        <Card.Body className={"p-5"}>
+                            <Form.Floating>
+                                <h5> Введите имя пользователя и пароль</h5>
+                                <hr/>
+                                <div className={"d-flex flex-column"}>
+                                    <Form.Control type={"text"} placeholder={"Логин"}
+                                                  onChange={this.handleLoginChange}/>
+                                    <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
+                                                  onChange={this.handlePasswordChange}/>
+                                </div>
+                                <Button variant={"outline-primary"} className={"mt-3"}
+                                        onClick={this.login}>Подключиться</Button>
+                                {
+                                    this.state.errorText !== "" && (
+                                        <div className={styles.alert_error}>
+                                            {this.state.errorText}
+                                        </div>
+                                    )
+                                }
+                            </Form.Floating>
+
+                        </Card.Body>
+                    </Card>
                 </div>
             </div>
         )

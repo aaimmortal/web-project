@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../assets/css/topbar.module.css";
 import {Button, Modal, Form} from "react-bootstrap";
 import axios from "axios";
-import {AiOutlineQuestionCircle, AiOutlineBell, AiOutlineMail, AiOutlineMessage} from 'react-icons/ai'
+import {AiOutlineQuestionCircle, AiOutlineBell, AiOutlineMail, AiOutlineMessage, AiOutlinePlus, AiOutlineSearch} from 'react-icons/ai'
 
 class Topbar extends React.Component {
     constructor(props) {
@@ -62,13 +62,29 @@ class Topbar extends React.Component {
         return (
             <div className={styles.topbar}>
                 <div className={styles.logo}>
-                    <h2>Logo</h2>
+                    <h2>HelpDesk 2.0</h2>
+                    <div className={styles.icons}>
+                        <AiOutlinePlus className={styles.icon}/>
+                        <AiOutlineSearch className={styles.icon}/>
+                    </div>
+                </div>
+                <div className={styles.info}>
+                    <div>
+                        <span>Календарь</span>
+                        <br/>
+                        <span>Создать событие</span>
+                    </div>
+                    <div className={styles.info1}>
+                        <span>Календарь</span>
+                        <br/>
+                        <span>73ч 0м</span>
+                    </div>
                 </div>
                 <div className={styles.icons}>
-                    <AiOutlineBell/>
-                    <AiOutlineMail/>
-                    <AiOutlineMessage/>
-                    <AiOutlineQuestionCircle/>
+                    <AiOutlineBell className={styles.icon}/>
+                    <AiOutlineMail className={styles.icon}/>
+                    <AiOutlineMessage className={styles.icon}/>
+                    <AiOutlineQuestionCircle className={styles.icon}/>
                 </div>
                 <div className={styles.avatar}>
                     <img className={styles.avatar_img} src={this.state.avatar}/>

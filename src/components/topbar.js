@@ -2,7 +2,14 @@ import React from "react";
 import styles from "../assets/css/topbar.module.css";
 import {Button, Modal, Form} from "react-bootstrap";
 import axios from "axios";
-import {AiOutlineQuestionCircle, AiOutlineBell, AiOutlineMail, AiOutlineMessage, AiOutlinePlus, AiOutlineSearch} from 'react-icons/ai'
+import {
+    AiOutlineQuestionCircle,
+    AiOutlineBell,
+    AiOutlineMail,
+    AiOutlineMessage,
+    AiOutlinePlus,
+    AiOutlineSearch
+} from 'react-icons/ai'
 
 class Topbar extends React.Component {
     constructor(props) {
@@ -69,13 +76,17 @@ class Topbar extends React.Component {
                     </div>
                 </div>
                 <div className={styles.info}>
-                    <div>
+                    <div className={styles.date}>
+                        <div style={{color: "#d1d1d1", fontWeight: "bold"}}>Чт</div>
+                        <div>30</div>
+                    </div>
+                    <div className={styles.calendar}>
                         <span>Календарь</span>
                         <br/>
-                        <span>Создать событие</span>
+                        <span style={{color: "#d1d1d1", fontWeight: "bold"}}>Создать событие</span>
                     </div>
                     <div className={styles.info1}>
-                        <span>Календарь</span>
+                        <span style={{color: "#d1d1d1", fontWeight: "bold"}}>Затрачено сегодня </span>
                         <br/>
                         <span>73ч 0м</span>
                     </div>

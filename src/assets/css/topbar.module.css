@@ -60,8 +60,15 @@ div h2 {
     color: white;
     width: 35%;
 }
+.date {
+    padding-right: 7px;
+}
+.calendar {
+    padding-left: 7px;
+    border-left: 3px solid white;
+}
 .info1 {
-    margin-left: 30px;
+    margin-left: 25px;
 }
 .icon {
     cursor: pointer;

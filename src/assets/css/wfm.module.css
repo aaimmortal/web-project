@@ -8,11 +8,54 @@
 .inputDate {
     margin-left: 7px;
 }
+
+.slider {
+    padding: 10px;
+}
+
+.NotActive {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+.sliderMenuItemActive {
+    background-color: #ebebeb;
+    border-radius: 30px;
+}
+
+nav {
+    width: 400px;
+    height: auto;
+    background: #f2f2f2;
+    border-radius: 30px;
+    border: 1px solid #d1d1d1;
+    font-size: 0;
+}
+
+nav div {
+    font-size: 16px;
+    color: #707070;
+    line-height: 40px;
+    padding: 4px;
+    display: inline-block;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+nav div:hover {
+    background-color: #ebebeb;
+    border-radius: 30px;
+}
+
 @media screen and (max-width: 520px) {
     .page {
         display: block;
     }
+
     .inputDateTime {
-        margin-left: 0px;
+        margin-left: 0;
     }
 }

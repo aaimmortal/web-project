@@ -32,8 +32,12 @@ class Wfm extends React.Component {
             key: true,
             start: moment().startOf("day").toDate(),
             end: moment().startOf("day").add(23, "hour").toDate(),
+            weekStart: moment().startOf("day").toDate(),
+            weekEnd: moment().startOf("day").add(23, "hour").toDate(),
             time1: "",
             time2: "",
+            weekTime1: "",
+            weekTime2: "",
             currentPage: 0,
             weeks: [
                 {
@@ -84,8 +88,6 @@ class Wfm extends React.Component {
         this.setState({
             currentDay: formattedDate
         })
-        console.log(moment().startOf("day").toDate())
-        console.log(moment().startOf("day").add(1, "day").toDate())
     }
 
     componentWillMount() {
@@ -186,7 +188,19 @@ class Wfm extends React.Component {
             selectedAgentByWeek: e.target.value
         })
     }
+    handleWeekTime1Change = (e) => {
+        this.setState({
+            weekTime1: e.target.value
+        })
+    }
+    handleWeekTime2Change = (e) => {
+        this.setState({
+            weekTime2: e.target.value
+        })
+    }
     getDays = async () => {
+        const time1 = this.state.weekTime1 === "" ? "00:00:00" : `${this.state.weekTime1}:00`
+        const time2 = this.state.weekTime2 === "" ? "23:59:59" : `${this.state.weekTime2}:59`
         const [year, week] = this.state.week.split('-W');
         if (year && week) {
             const startDate = new Date(year, 0, 2); // January 1st of the selected year
@@ -240,7 +254,9 @@ class Wfm extends React.Component {
             this.setState({
                 weekGroups: groups,
                 weekItems: items,
-                weekKey: !this.state.weekKey
+                weekKey: !this.state.weekKey,
+                weekStart: moment(this.state.currentDay + " " + time1),
+                weekEnd: moment(this.state.currentDay + " " + time2)
             })
         }
     };
@@ -321,8 +337,8 @@ class Wfm extends React.Component {
                             </nav>
                             <Card className={"mt-2"}>
                                 <Card.Header>Введите детали</Card.Header>
-                                <Card.Body className={"w-100 d-flex align-items-center"}>
-                                    <Form.Select onChange={this.handleSelectedAgentByWeek}>
+                                <Card.Body className={"d-flex align-items-center"}>
+                                    <Form.Select onChange={this.handleSelectedAgentByWeek} className={styles.select}>
                                         {
                                             this.state.options.map(cur => (
                                                 <option>{cur.value}</option>
@@ -332,6 +348,10 @@ class Wfm extends React.Component {
                                     <Form.Group className={"d-flex"}>
                                         <Form.Control className={styles.inputDate} type={"week"}
                                                       onChange={this.handleWeekChange}/>
+                                        <Form.Control className={styles.inputDate} type={"time"}
+                                                      onChange={this.handleWeekTime1Change}/>
+                                        <Form.Control className={styles.inputDate} type={"time"}
+                                                      onChange={this.handleWeekTime2Change}/>
                                         <Button variant={"outline-primary"} className={"ms-1"}
                                                 onClick={this.getDays}>Показать</Button>
                                     </Form.Group>
@@ -346,8 +366,8 @@ class Wfm extends React.Component {
                                     items={this.state.weekItems}
                                     canMove={false}
                                     canResize={false}
-                                    visibleTimeStart={new Date().setHours(0, 0, 0, 0)}
-                                    visibleTimeEnd={new Date().setHours(23, 59, 59, 999)}
+                                    defaultTimeStart={this.state.weekStart}
+                                    defaultTimeEnd={this.state.weekEnd}
                                 >
                                     <TimelineHeaders style={{backgroundColor: "#34495e"}}>
                                         <SidebarHeader>

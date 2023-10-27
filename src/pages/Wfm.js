@@ -14,11 +14,11 @@ import {isExpired} from "react-jwt";
 import Topbar from "../components/topbar";
 import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHeaders";
 import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
+import SidebarHeader from "react-calendar-timeline/lib/lib/headers/SidebarHeader";
 
 class Wfm extends React.Component {
     constructor(props) {
         super(props);
-        this.containerRef = React.createRef()
         this.state = {
             searchAgent: "7001",
             date: "",
@@ -30,51 +30,62 @@ class Wfm extends React.Component {
                 {label: '7002', value: '7002'},
             ],
             key: true,
-            key1: true,
             start: moment().startOf("day").toDate(),
-            end: moment().startOf("day").add(1, "day").toDate(),
+            end: moment().startOf("day").add(23, "hour").toDate(),
             time1: "",
             time2: "",
             currentPage: 0,
             weeks: [
                 {
                     id: 0,
-                    title: 'Понедельник'
+                    title: 'Пн.'
                 },
                 {
                     id: 1,
-                    title: 'Вторник'
+                    title: 'Вт.'
                 },
                 {
                     id: 2,
-                    title: 'Среда'
+                    title: 'Ср.'
                 },
                 {
                     id: 3,
-                    title: 'Четверг'
+                    title: 'Чт.'
                 },
                 {
                     id: 4,
-                    title: 'Птяница'
+                    title: 'Пт.'
                 },
                 {
                     id: 5,
-                    title: 'Суббота'
+                    title: 'Сб.'
                 },
                 {
                     id: 6,
-                    title: 'Воскресенье'
+                    title: 'Вс.'
                 },
             ],
             week: "",
             selectedAgentByWeek: "7001",
-            weekRes: [],
-            active: 0
+            weekItems: [],
+            weekGroups: [],
+            weekKey: false,
+            active: 0,
+            currentDay: ""
         }
     }
 
     componentDidMount() {
-
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        this.setState({
+            currentDay: formattedDate
+        })
+        console.log(moment().startOf("day").toDate())
+        console.log(moment().startOf("day").add(1, "day").toDate())
     }
 
     componentWillMount() {
@@ -108,13 +119,11 @@ class Wfm extends React.Component {
         this.setState({
             date: e.target.value
         })
-        console.log(e.target.value)
     }
     handleWeekChange = (e) => {
         this.setState({
             week: e.target.value
         })
-        console.log(e.target.value)
     }
     handleSubmit = () => {
         const time1 = this.state.time1 === "" ? "00:00:00" : `${this.state.time1}:00`
@@ -143,8 +152,7 @@ class Wfm extends React.Component {
                         itemProps: {
                             style: {
                                 background: (temp[i][j].action === "Login" || temp[i][j].action === "UNPAUSED") ? '#5bc0de' : '#f0ad4e'
-                            },
-                            className: '',
+                            }
                         }
                     })
                 }
@@ -186,7 +194,6 @@ class Wfm extends React.Component {
             const startOfWeek = new Date(startDate);
             startOfWeek.setDate(startOfWeek.getDate() + (week - 1) * daysInWeek);
             const days = [];
-            const arr = []
             for (let i = 0; i < daysInWeek; i++) {
                 const date = new Date(startOfWeek);
                 date.setDate(date.getDate() + i);
@@ -197,7 +204,8 @@ class Wfm extends React.Component {
                 days.push(formattedDate);
             }
             const agent = this.state.selectedAgentByWeek
-            console.log(agent)
+            const groups = []
+            const items = []
             for (let c = 0; c < days.length; c++) {
                 const response = await axios.get("http://172.16.3.185:8080/api/wfmGraph", {
                     params: {
@@ -206,42 +214,34 @@ class Wfm extends React.Component {
                     }
                 })
                 if (response.status === 200) {
-                    console.log(response.data)
                     const temp = response.data
-                    const items = []
-                    const groups = [{
+                    groups.push({
                         id: c,
-                        title: this.state.weeks[c].title
-                    }]
+                        title: this.state.weeks[c].title + " " + days[c]
+                    })
                     for (let i = 0; i < temp.length; i++) {
                         for (let j = 0; j < temp[i].length - 1; j++) {
                             items.push({
                                 id: j,
                                 group: c,
-                                start_time: moment(temp[i][j].date),
-                                end_time: moment(temp[i][j + 1].date),
+                                start_time: moment(this.state.currentDay + " " + temp[i][j].date.split('T')[1]),
+                                end_time: moment(this.state.currentDay + " " + temp[i][j + 1].date.split('T')[1]),
                                 itemProps: {
                                     style: {
                                         background: (temp[i][j].action === "Login" || temp[i][j].action === "UNPAUSED") ? '#5bc0de' : '#f0ad4e'
-                                    },
+                                    }
                                 }
                             })
                         }
-                        arr.push({
-                            items: items,
-                            groups: groups,
-                            start: moment(days[c]),
-                            end: moment(days[c]).add('1', "day"),
-                            key: true
-                        })
                     }
 
                 }
             }
             this.setState({
-                weekRes: arr
+                weekGroups: groups,
+                weekItems: items,
+                weekKey: !this.state.weekKey
             })
-            console.log(arr)
         }
     };
     changeActive = (e) => {
@@ -256,22 +256,22 @@ class Wfm extends React.Component {
                 <Topbar/>
                 <div className={styles.page}>
                     <Sidebar/>
-                    <div style={{width: "85%"}} className={styles.slider}>
+                    <div className={styles.slider}>
                         <div className={this.state.active === 0 ? styles.active : styles.NotActive}>
                             <nav className={"shadow-sm"}>
                                 <div className={`${styles.sliderMenuItemActive}`}>График по дням</div>
                                 <div onClick={() => this.changeActive(1)}>График по неделям</div>
                             </nav>
-                            <Card className={"mt-2"}>
+                            <Card className={styles.card}>
                                 <Card.Header>Введите детали</Card.Header>
-                                <Card.Body className={"w-100 d-flex align-items-center"}>
+                                <Card.Body className={styles.cardBody}>
                                     <Select
                                         options={this.state.options}
                                         isMulti
                                         value={this.selectedOptions}
                                         onChange={this.handleSelectChange}
                                     />
-                                    <Form.Group className={"d-flex"}>
+                                    <Form.Group className={styles.form}>
                                         <Form.Control className={styles.inputDate} type={"date"}
                                                       onChange={this.handleDateChange}/>
                                         <Form.Control className={styles.inputDate} type={"time"}
@@ -285,7 +285,6 @@ class Wfm extends React.Component {
                             </Card>
                             <div className={"mt-3"}>
                                 <Timeline
-                                    sidebarContent="Операторы"
                                     minZoom={60 * 60 * 1000 * 24}
                                     maxZoom={60 * 60 * 1000 * 24}
                                     key={this.state.key}
@@ -297,6 +296,18 @@ class Wfm extends React.Component {
                                     defaultTimeEnd={this.state.end}
                                 >
                                     <TimelineHeaders style={{backgroundColor: "#34495e"}}>
+                                        <SidebarHeader>
+                                            {({getRootProps}) => {
+                                                return <div {...getRootProps({
+                                                    style: {
+                                                        color: "white",
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center"
+                                                    }
+                                                })}>Операторы</div>
+                                            }}
+                                        </SidebarHeader>
                                         <DateHeader unit="primaryHeader"/>
                                         <DateHeader/>
                                     </TimelineHeaders>
@@ -326,25 +337,36 @@ class Wfm extends React.Component {
                                     </Form.Group>
                                 </Card.Body>
                             </Card>
-                            {
-                                this.state.weekRes.map(cur => (
-                                    <div style={{marginTop: "100px"}}>
-                                        <Timeline
-                                            sidebarContent="Операторы"
-                                            key={cur.key}
-                                            minZoom={60 * 60 * 1000 * 24}
-                                            maxZoom={60 * 60 * 1000 * 24}
-                                            style={{maxWidth: "100%"}}
-                                            groups={cur.groups}
-                                            items={cur.items}
-                                            canMove={false}
-                                            canResize={false}
-                                            defaultTimeStart={cur.start}
-                                            defaultTimeEnd={cur.end}
-                                        />
-                                    </div>
-                                ))
-                            }
+                            <div className={"mt-3"}>
+                                <Timeline
+                                    minZoom={60 * 60 * 1000 * 24}
+                                    maxZoom={60 * 60 * 1000 * 24}
+                                    key={this.state.weekKey}
+                                    groups={this.state.weekGroups}
+                                    items={this.state.weekItems}
+                                    canMove={false}
+                                    canResize={false}
+                                    visibleTimeStart={new Date().setHours(0, 0, 0, 0)}
+                                    visibleTimeEnd={new Date().setHours(23, 59, 59, 999)}
+                                >
+                                    <TimelineHeaders style={{backgroundColor: "#34495e"}}>
+                                        <SidebarHeader>
+                                            {({getRootProps}) => {
+                                                return <div {...getRootProps({
+                                                    style: {
+                                                        color: "white",
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center"
+                                                    }
+                                                })}>Дни недели</div>
+                                            }}
+                                        </SidebarHeader>
+                                        <DateHeader style={{display: "none"}} unit="primaryHeader"/>
+                                        <DateHeader/>
+                                    </TimelineHeaders>
+                                </Timeline>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -241,7 +241,7 @@ class Main extends React.Component {
                                 </Form.Group>
                             </Card.Body>
                         </Card>
-                        <div className={`mt-3`} style={{width: "1230px"}}>
+                        <div className={`mt-3`}>
                             <Table responsive={true} striped bordered hover>
                                 <thead>
                                 <tr>

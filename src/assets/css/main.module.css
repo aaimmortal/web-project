@@ -9,11 +9,11 @@
 .hiddenTable {
     display: none;
 }
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 700px) {
     .page {
         display: block;
     }
     .inputDateTime {
-        margin-left: 0px;
+        margin-left: 0;
     }
 }

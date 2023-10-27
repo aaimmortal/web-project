@@ -5,12 +5,23 @@
     display: flex;
 }
 
+.card {
+    margin-top: 10px;
+}
+.cardBody {
+    display: flex;
+}
+.form {
+    display: flex;
+}
+
 .inputDate {
     margin-left: 7px;
 }
 
 .slider {
     padding: 10px;
+    width: 85%;
 }
 
 .NotActive {
@@ -27,19 +38,18 @@
 }
 
 nav {
-    width: 400px;
+    width: 340px;
     height: auto;
     background: #f2f2f2;
     border-radius: 30px;
     border: 1px solid #d1d1d1;
-    font-size: 0;
 }
 
 nav div {
     font-size: 16px;
     color: #707070;
-    line-height: 40px;
     padding: 4px;
+    line-height: 33px;
     display: inline-block;
     margin-left: 20px;
     cursor: pointer;
@@ -50,11 +60,22 @@ nav div:hover {
     border-radius: 30px;
 }
 
-@media screen and (max-width: 520px) {
+@media screen and (max-width: 700px) {
+    nav {
+        width: 320px;
+    }
+    nav div {
+        padding: 2px;
+    }
+    .slider {
+        width: 100%;
+    }
+    .form {
+        width: 300px;
+    }
     .page {
         display: block;
     }
-
     .inputDateTime {
         margin-left: 0;
     }

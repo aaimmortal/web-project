@@ -41,6 +41,7 @@ class Sidebar extends React.Component {
             <div className={`${styles.background}  ${this.state.isOpen && styles.activeBack}`}>
                 <div className={styles.top_section}>
                     <AiOutlineMenu className={styles.logo} onClick={this.changeIsOpen}/>
+                    <img src={require('../assets/images/default.png')} width={42}/>
                 </div>
                 <div className={`${styles.menuItems} ${this.state.isOpen && styles.active}`}>
                     {

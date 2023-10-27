@@ -191,7 +191,7 @@ class Agent extends React.Component {
                                 </Form.Group>
                             </Card.Body>
                         </Card>
-                        <div className={"p-3"} style={{width: "1250px"}}>
+                        <div className={"p-3"}>
                             <Table responsive={true} striped bordered hover ref={this.tableRef}>
                                 <thead>
                                 <tr>

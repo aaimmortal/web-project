@@ -1,12 +1,12 @@
 import React from "react";
 import styles from '../assets/css/addAgent.module.css'
-import Sidebar from "../components/sidebar";
+import sharedStyles from '../assets/css/shared.module.css'
 import axios from "axios";
 import {Button, Card, Form} from "react-bootstrap";
 import {connect} from "react-redux";
 import {goto, toggle} from "../redux/reducer";
 import {isExpired} from "react-jwt";
-import Topbar from "../components/topbar";
+import Wrapper from "../components/Wrapper";
 
 class AddAgent extends React.Component {
     constructor(props) {
@@ -21,6 +21,7 @@ class AddAgent extends React.Component {
 
     componentDidMount() {
     }
+
     componentWillMount() {
         const token = localStorage.getItem("jwt")
         console.log(token)
@@ -105,38 +106,34 @@ class AddAgent extends React.Component {
     render() {
         return (
             <div>
-                <Topbar/>
-                <div className={styles.page}>
-                    <Sidebar/>
-                    <div style={{width: "80%"}} className={"d-flex justify-content-center align-items-center"}>
-                        <Card className={"w-50"}>
-                            <Card.Header>Добавить агента</Card.Header>
-                            <Card.Body>
-                                <Form.Group>
-                                    <div className={"d-flex flex-column"}>
-                                        <Form.Control type={"text"} placeholder={"Логин"}
-                                                      onChange={this.handleLoginChange}/>
-                                        <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
-                                                      onChange={this.handlePasswordChange}/>
-                                        <Form.Control className={"mt-2"} type={"password"}
-                                                      placeholder={"Повторите пароль"}
-                                                      onChange={this.handleRepeatPasswordChange}/>
-                                    </div>
-                                    <br/>
-                                    <Button variant={"outline-primary"} onClick={this.add}>Добавить</Button>
-                                    {
-                                        this.state.text !== "" && (
-                                            <div
-                                                className={this.state.text === "User created" ? styles.alert_success : styles.alert_error}>
-                                                {this.state.text}
-                                            </div>
-                                        )
-                                    }
-                                </Form.Group>
-                            </Card.Body>
-                        </Card>
-                    </div>
-                </div>
+                <Wrapper className={styles.container}>
+                    <Card className={"w-50"}>
+                        <Card.Header>Добавить агента</Card.Header>
+                        <Card.Body>
+                            <Form.Group>
+                                <div>
+                                    <Form.Control type={"text"} placeholder={"Логин"}
+                                                  onChange={this.handleLoginChange}/>
+                                    <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
+                                                  onChange={this.handlePasswordChange}/>
+                                    <Form.Control className={"mt-2"} type={"password"}
+                                                  placeholder={"Повторите пароль"}
+                                                  onChange={this.handleRepeatPasswordChange}/>
+                                </div>
+                                <br/>
+                                <Button variant={"outline-primary"} onClick={this.add}>Добавить</Button>
+                                {
+                                    this.state.text !== "" && (
+                                        <div
+                                            className={this.state.text === "User created" ? sharedStyles.alert_success : sharedStyles.alert_error}>
+                                            {this.state.text}
+                                        </div>
+                                    )
+                                }
+                            </Form.Group>
+                        </Card.Body>
+                    </Card>
+                </Wrapper>
             </div>
         )
     }

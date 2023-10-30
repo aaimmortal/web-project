@@ -1,19 +1,9 @@
-.page {
-    min-height: 100vh;
-    background-color: #f8f9fa;
-    display: flex;
-}
-
 .left_right {
     width: 100%;
     height: 420px;
     display: flex;
     justify-content: space-around;
     margin-top: 10px;
-}
-
-.inputDateTime {
-    margin-left: 7px;
 }
 
 .left {
@@ -64,11 +54,11 @@
     opacity: 1;
 }
 
-@media screen and (max-width: 520px) {
-    .page {
-        display: block;
-    }
+.tableContainer {
+    margin-top: 20px;
+}
 
+@media screen and (max-width: 700px) {
     .left_right {
         display: block;
     }
@@ -80,5 +70,9 @@
 
     .left {
         width: 100%;
+    }
+
+    .tableContainer {
+        margin-top: 450px;
     }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import styles from '../assets/css/login.module.css'
+import sharedStyles from '../assets/css/shared.module.css'
 import axios from "axios";
 import {Button, Card, Form} from "react-bootstrap";
 
@@ -59,7 +60,7 @@ class Login extends React.Component {
                             <Form.Floating>
                                 <h5> Введите имя пользователя и пароль</h5>
                                 <hr/>
-                                <div className={"d-flex flex-column"}>
+                                <div>
                                     <Form.Control type={"text"} placeholder={"Логин"}
                                                   onChange={this.handleLoginChange}/>
                                     <Form.Control className={"mt-2"} type={"password"} placeholder={"Пароль"}
@@ -69,7 +70,7 @@ class Login extends React.Component {
                                         onClick={this.login}>Подключиться</Button>
                                 {
                                     this.state.errorText !== "" && (
-                                        <div className={styles.alert_error}>
+                                        <div className={sharedStyles.alert_error}>
                                             {this.state.errorText}
                                         </div>
                                     )

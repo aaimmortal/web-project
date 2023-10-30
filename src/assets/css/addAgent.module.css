@@ -1,26 +1,5 @@
-.page {
-    min-height: 100vh;
-    background-color: #f8f9fa;
+.container {
     display: flex;
-}
-.inputDateTime {
-    margin-left: 7px;
-}
-.alert_error {
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 5px;
-    background-color: #f8d7da;
-}
-
-.alert_success {
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 5px;
-    background-color: #d4edda ;
-}
-@media screen and (max-width: 520px) {
-    .page {
-        display: block;
-    }
+    justify-content: center;
+    align-items: center;
 }

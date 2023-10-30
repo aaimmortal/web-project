@@ -1,7 +1,7 @@
 import React from "react";
 
 import styles from '../assets/css/wfm.module.css'
-import Sidebar from "../components/sidebar";
+import sharedStyles from '../assets/css/shared.module.css'
 import axios from "axios";
 import Timeline from 'react-calendar-timeline'
 import moment from "moment";
@@ -11,12 +11,32 @@ import {Button, Card, Form} from "react-bootstrap";
 import {goto, toggle} from "../redux/reducer";
 import {connect} from "react-redux";
 import {isExpired} from "react-jwt";
-import Topbar from "../components/topbar";
 import TimelineHeaders from "react-calendar-timeline/lib/lib/headers/TimelineHeaders";
 import DateHeader from "react-calendar-timeline/lib/lib/headers/DateHeader";
 import SidebarHeader from "react-calendar-timeline/lib/lib/headers/SidebarHeader";
+import Wrapper from "../components/Wrapper";
 
 class Wfm extends React.Component {
+    componentDidMount() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        this.setState({
+            currentDay: formattedDate
+        })
+    }
+
+    componentWillMount() {
+        // const token = localStorage.getItem("jwt")
+        // console.log(token)
+        // if (isExpired(token)) {
+        //     window.location.href = "http://localhost:3000/"
+        // }
+        this.props.goto("GOTO", window.location.pathname)
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -77,26 +97,6 @@ class Wfm extends React.Component {
             active: 0,
             currentDay: ""
         }
-    }
-
-    componentDidMount() {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-        const day = String(currentDate.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
-        this.setState({
-            currentDay: formattedDate
-        })
-    }
-
-    componentWillMount() {
-        // const token = localStorage.getItem("jwt")
-        // console.log(token)
-        // if (isExpired(token)) {
-        //     window.location.href = "http://localhost:3000/"
-        // }
-        this.props.goto("GOTO", window.location.pathname)
     }
 
     static mapStateToProps(state) {
@@ -269,75 +269,73 @@ class Wfm extends React.Component {
     render() {
         return (
             <div>
-                <Topbar/>
-                <div className={styles.page}>
-                    <Sidebar/>
-                    <div className={styles.slider}>
-                        <div className={this.state.active === 0 ? styles.active : styles.NotActive}>
-                            <nav className={"shadow-sm"}>
-                                <div className={`${styles.sliderMenuItemActive}`}>График по дням</div>
-                                <div onClick={() => this.changeActive(1)}>График по неделям</div>
-                            </nav>
-                            <Card className={styles.card}>
-                                <Card.Header>Введите детали</Card.Header>
-                                <Card.Body className={styles.cardBody}>
+                <Wrapper>
+                    <div className={this.state.active === 0 ? styles.active : styles.NotActive}>
+                        <nav className={"shadow-sm"}>
+                            <div className={`${styles.sliderMenuItemActive}`}>График по дням</div>
+                            <div onClick={() => this.changeActive(1)}>График по неделям</div>
+                        </nav>
+                        <Card className={"mt-2"}>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body>
+                                <Form.Group className={sharedStyles.formGroup}>
                                     <Select
                                         options={this.state.options}
                                         isMulti
                                         value={this.selectedOptions}
                                         onChange={this.handleSelectChange}
                                     />
-                                    <Form.Group className={styles.form}>
-                                        <Form.Control className={styles.inputDate} type={"date"}
-                                                      onChange={this.handleDateChange}/>
-                                        <Form.Control className={styles.inputDate} type={"time"}
-                                                      onChange={this.handleStartTimeChange}/>
-                                        <Form.Control className={styles.inputDate} type={"time"}
-                                                      onChange={this.handleEndTimeChange}/>
-                                        <Button variant={"outline-primary"} className={"ms-1"}
-                                                onClick={this.handleSubmit}>Показать</Button>
-                                    </Form.Group>
-                                </Card.Body>
-                            </Card>
-                            <div className={"mt-3"}>
-                                <Timeline
-                                    minZoom={60 * 60 * 1000 * 24}
-                                    maxZoom={60 * 60 * 1000 * 24}
-                                    key={this.state.key}
-                                    groups={this.state.groups}
-                                    items={this.state.items}
-                                    canMove={false}
-                                    canResize={false}
-                                    defaultTimeStart={this.state.start}
-                                    defaultTimeEnd={this.state.end}
-                                >
-                                    <TimelineHeaders style={{backgroundColor: "#34495e"}}>
-                                        <SidebarHeader>
-                                            {({getRootProps}) => {
-                                                return <div {...getRootProps({
-                                                    style: {
-                                                        color: "white",
-                                                        display: "flex",
-                                                        justifyContent: "center",
-                                                        alignItems: "center"
-                                                    }
-                                                })}>Операторы</div>
-                                            }}
-                                        </SidebarHeader>
-                                        <DateHeader unit="primaryHeader"/>
-                                        <DateHeader/>
-                                    </TimelineHeaders>
-                                </Timeline>
-                            </div>
+                                    <Form.Control className={sharedStyles.input} type={"date"}
+                                                  onChange={this.handleDateChange}/>
+                                    <Form.Control className={sharedStyles.input} type={"time"}
+                                                  onChange={this.handleStartTimeChange}/>
+                                    <Form.Control className={sharedStyles.input} type={"time"}
+                                                  onChange={this.handleEndTimeChange}/>
+                                    <Button variant={"outline-primary"} className={sharedStyles.input}
+                                            onClick={this.handleSubmit}>Показать</Button>
+                                </Form.Group>
+                            </Card.Body>
+                        </Card>
+                        <div className={"mt-3"}>
+                            <Timeline
+                                minZoom={60 * 60 * 1000 * 24}
+                                maxZoom={60 * 60 * 1000 * 24}
+                                key={this.state.key}
+                                groups={this.state.groups}
+                                items={this.state.items}
+                                canMove={false}
+                                canResize={false}
+                                defaultTimeStart={this.state.start}
+                                defaultTimeEnd={this.state.end}
+                            >
+                                <TimelineHeaders style={{backgroundColor: "#34495e"}}>
+                                    <SidebarHeader>
+                                        {({getRootProps}) => {
+                                            return <div {...getRootProps({
+                                                style: {
+                                                    color: "white",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center"
+                                                }
+                                            })}>Операторы</div>
+                                        }}
+                                    </SidebarHeader>
+                                    <DateHeader unit="primaryHeader"/>
+                                    <DateHeader/>
+                                </TimelineHeaders>
+                            </Timeline>
                         </div>
-                        <div className={this.state.active === 1 ? styles.active : styles.NotActive}>
-                            <nav className={"shadow-sm"}>
-                                <div onClick={() => this.changeActive(0)}>График по дням</div>
-                                <div className={`${styles.sliderMenuItemActive}`}>График по неделям</div>
-                            </nav>
-                            <Card className={"mt-2"}>
-                                <Card.Header>Введите детали</Card.Header>
-                                <Card.Body className={"d-flex align-items-center"}>
+                    </div>
+                    <div className={this.state.active === 1 ? styles.active : styles.NotActive}>
+                        <nav className={"shadow-sm"}>
+                            <div onClick={() => this.changeActive(0)}>График по дням</div>
+                            <div className={`${styles.sliderMenuItemActive}`}>График по неделям</div>
+                        </nav>
+                        <Card className={"mt-2"}>
+                            <Card.Header>Введите детали</Card.Header>
+                            <Card.Body>
+                                <Form.Group className={sharedStyles.formGroup}>
                                     <Form.Select onChange={this.handleSelectedAgentByWeek} className={styles.select}>
                                         {
                                             this.state.options.map(cur => (
@@ -345,51 +343,49 @@ class Wfm extends React.Component {
                                             ))
                                         }
                                     </Form.Select>
-                                    <Form.Group className={"d-flex"}>
-                                        <Form.Control className={styles.inputDate} type={"week"}
-                                                      onChange={this.handleWeekChange}/>
-                                        <Form.Control className={styles.inputDate} type={"time"}
-                                                      onChange={this.handleWeekTime1Change}/>
-                                        <Form.Control className={styles.inputDate} type={"time"}
-                                                      onChange={this.handleWeekTime2Change}/>
-                                        <Button variant={"outline-primary"} className={"ms-1"}
-                                                onClick={this.getDays}>Показать</Button>
-                                    </Form.Group>
-                                </Card.Body>
-                            </Card>
-                            <div className={"mt-3"}>
-                                <Timeline
-                                    minZoom={60 * 60 * 1000 * 24}
-                                    maxZoom={60 * 60 * 1000 * 24}
-                                    key={this.state.weekKey}
-                                    groups={this.state.weekGroups}
-                                    items={this.state.weekItems}
-                                    canMove={false}
-                                    canResize={false}
-                                    defaultTimeStart={this.state.weekStart}
-                                    defaultTimeEnd={this.state.weekEnd}
-                                >
-                                    <TimelineHeaders style={{backgroundColor: "#34495e"}}>
-                                        <SidebarHeader>
-                                            {({getRootProps}) => {
-                                                return <div {...getRootProps({
-                                                    style: {
-                                                        color: "white",
-                                                        display: "flex",
-                                                        justifyContent: "center",
-                                                        alignItems: "center"
-                                                    }
-                                                })}>Дни недели</div>
-                                            }}
-                                        </SidebarHeader>
-                                        <DateHeader style={{display: "none"}} unit="primaryHeader"/>
-                                        <DateHeader/>
-                                    </TimelineHeaders>
-                                </Timeline>
-                            </div>
+                                    <Form.Control className={sharedStyles.input} type={"week"}
+                                                  onChange={this.handleWeekChange}/>
+                                    <Form.Control className={sharedStyles.input} type={"time"}
+                                                  onChange={this.handleWeekTime1Change}/>
+                                    <Form.Control className={sharedStyles.input} type={"time"}
+                                                  onChange={this.handleWeekTime2Change}/>
+                                    <Button variant={"outline-primary"} className={sharedStyles.input}
+                                            onClick={this.getDays}>Показать</Button>
+                                </Form.Group>
+                            </Card.Body>
+                        </Card>
+                        <div className={"mt-3"}>
+                            <Timeline
+                                minZoom={60 * 60 * 1000 * 24}
+                                maxZoom={60 * 60 * 1000 * 24}
+                                key={this.state.weekKey}
+                                groups={this.state.weekGroups}
+                                items={this.state.weekItems}
+                                canMove={false}
+                                canResize={false}
+                                defaultTimeStart={this.state.weekStart}
+                                defaultTimeEnd={this.state.weekEnd}
+                            >
+                                <TimelineHeaders style={{backgroundColor: "#34495e"}}>
+                                    <SidebarHeader>
+                                        {({getRootProps}) => {
+                                            return <div {...getRootProps({
+                                                style: {
+                                                    color: "white",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center"
+                                                }
+                                            })}>Дни недели</div>
+                                        }}
+                                    </SidebarHeader>
+                                    <DateHeader style={{display: "none"}} unit="primaryHeader"/>
+                                    <DateHeader/>
+                                </TimelineHeaders>
+                            </Timeline>
                         </div>
                     </div>
-                </div>
+                </Wrapper>
             </div>
         )
     }

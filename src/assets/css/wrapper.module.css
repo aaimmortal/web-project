@@ -1,0 +1,16 @@
+.page{
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    display: flex;
+}
+.wrapperInner {
+    width: 85%;
+}
+@media screen and (max-width: 700px) {
+    .page {
+        display: block;
+    }
+    .wrapperInner {
+        width: 100%;
+    }
+}

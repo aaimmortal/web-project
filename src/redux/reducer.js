@@ -1,6 +1,7 @@
 import {TbDeviceDesktopAnalytics, TbReportSearch} from "react-icons/tb";
 import {AiOutlineBarChart, AiOutlineUserAdd} from "react-icons/ai";
 import {FaUsers} from "react-icons/fa";
+import { MdOutlinePersonOutline } from "react-icons/md";
 import {BiLogOut, BiTime} from "react-icons/bi";
 import {HiOutlineDocument} from "react-icons/hi";
 import React from "react";
@@ -53,10 +54,18 @@ const initialState = {
                     icon: <HiOutlineDocument/>,
                     sub: []
                 },
+                {
+                    id: 7,
+                    path: "/status",
+                    name: "Статус",
+                    open: false,
+                    icon: <MdOutlinePersonOutline/>,
+                    sub: []
+                },
             ]
         },
         {
-            id: 7,
+            id: 8,
             path: "/register",
             name: "Добавить пользовтеля",
             open: false,
@@ -64,7 +73,7 @@ const initialState = {
             sub: []
         },
         {
-            id: 8,
+            id: 9,
             path: "/",
             name: "Выйти",
             open: false,

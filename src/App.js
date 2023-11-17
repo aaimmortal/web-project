@@ -8,6 +8,7 @@ import AddAgent from "./pages/addAgent";
 import {Provider} from "react-redux";
 import store from "./redux/store";
 import React from "react";
+import Status from "./pages/status";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                         <Route path={"/statistics"} element={<Statistics/>}/>
                         <Route path={"/agents"} element={<Agent/>}/>
                         <Route path={"/wfm"} element={<Wfm/>}/>
+                        <Route path={"/status"} element={<Status/>}/>
                     </Routes>
                 </BrowserRouter>
             </Provider>

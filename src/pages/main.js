@@ -123,7 +123,7 @@ class Main extends React.Component {
     handleSubmit = () => {
         const start = `${this.state.startDate} ${this.state.startTime}:00`
         const end = `${this.state.endDate} ${this.state.endTime}:59`
-        axios.get("http://172.16.3.185:8080/api/calldateBetween", {
+        axios.get("http://localhost:8080/api/calldateBetween", {
             params: {
                 dateTime: start,
                 dateTime2: end
@@ -139,7 +139,7 @@ class Main extends React.Component {
 
     fetchAudio = async (cid) => {
         try {
-            const response = await axios.get("http://172.16.3.185:8080/api/audio", {
+            const response = await axios.get("http://localhost:8080/api/audio", {
                 responseType: 'blob',
                 params: {
                     id: cid
